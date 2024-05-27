@@ -1,5 +1,6 @@
 import styles from "./App.module.css";
 import NavBar from "./components/NavBar";
+import SearchBar from "./components/SearchBar"
 import Container from "react-bootstrap/Container";
 import { Route, Switch } from "react-router-dom";
 import "./api/axiosDefaults";
@@ -17,6 +18,7 @@ function App() {
           <Route exact path="/signup" render={() => <SignUpForm />} />
           <Route render={() => <p>Page not found!</p>} />
         </Switch>
+        <SearchBar/>
       </Container>
     </div>
   );

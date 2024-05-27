@@ -4,6 +4,10 @@
   min-height: 100vh;
 }
 
+.Main {
+  padding: 20px;
+  width: 100%; /* Ensure it takes up full width */
+}
 
 .Content {
   background-color: #ffffff;

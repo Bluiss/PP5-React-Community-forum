@@ -1,0 +1,8 @@
+.searchBarContainer {
+    background-color: #8540F5; /* Purple background */
+    padding: 10px;
+    width: 100vw; /* Full viewport width */
+    margin-left: calc(50% - 50vw); /* Adjust margin to counteract container padding */
+    height: 300px;
+  }
+  
