@@ -16,6 +16,7 @@ import UsernameForm from "./pages/profiles/UsernameForm";
 import UserPasswordForm from "./pages/profiles/UserPasswordForm";
 import ProfileEditForm from "./pages/profiles/ProfileEditForm";
 import ChannelsPage from "./pages/channels/ChannelsPage"
+import ChannelCreateForm from "./pages/channels/ChannelCreateForm";
 
 function App() {
   const currentUser = useCurrentUser();
@@ -61,6 +62,7 @@ function App() {
           <Route exact path="/posts/:id" render={() => <PostPage />} />
           <Route exact path="/posts/:id/edit" render={() => <PostEditForm />} />
           <Route exact path="/profiles/:id" render={() => <ProfilePage />} />
+          <Route exact path="/channel/create" render={() => <ChannelCreateForm/>} />
           <Route exact path="/channels/:id" render={() => <ChannelsPage/>} />
           <Route
             exact
