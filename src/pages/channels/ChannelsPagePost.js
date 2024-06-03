@@ -32,7 +32,7 @@ function ChannelsPagePost() {
             <div>
               <h1>{post.title}</h1>
               <p>{post.content}</p>
-              <p>{post.content}</p>
+              <p>{post.channel_display_title}</p>
               {post.image && <img src={post.image} alt={post.title} className={appStyles.Image} />}
             </div>
           ) : (
