@@ -6,7 +6,7 @@ import { followHelper, unfollowHelper } from "../utils/utils";
 const ChannelDataContext = createContext();
 const SetChannelDataContext = createContext();
 
-export const useChannelData = () => useContext(ChannelDataContext);
+export const useChannelData = () => useContext(ChannelDataContext) || { channelData: { pageChannel: { results: [] }, popularChannels: { results: [] } } };
 export const useSetChannelData = () => useContext(SetChannelDataContext);
 
 export const ChannelDataProvider = ({ children }) => {

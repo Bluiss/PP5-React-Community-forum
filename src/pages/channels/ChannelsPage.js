@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
 
-import appStyles from "../../App.module.css";
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import ChannelsPagePost from "./ChannelsPagePost";
 
 function ChannelsPage() {
   const { id } = useParams();
-  const [post, setPost] = useState();
+  const [setPost] = useState();
 
   useEffect(() => {
     const handleMount = async () => {
