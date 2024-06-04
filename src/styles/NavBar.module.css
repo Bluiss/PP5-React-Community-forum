@@ -10,3 +10,10 @@
   .Active i {
     color: white;
   }
+
+  .CustomDropdownToggle {
+    background-color: transparent !important;
+    border: none !important;
+    color: inherit;
+  }
+  

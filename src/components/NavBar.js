@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Container, Nav } from "react-bootstrap";
+import { Navbar, Container, Nav, Dropdown } from "react-bootstrap";
 import logo from "../assets/logo.png";
 import styles from "../styles/NavBar.module.css";
 import { NavLink } from "react-router-dom";
@@ -32,9 +32,20 @@ const NavBar = () => {
       activeClassName={styles.Active}
       to="/posts/create"
     >
-      <i className="far fa-plus-square"></i>
+      <i className="far fa-plus-square"></i> Add Post
     </NavLink>
   );
+
+  const addChannelIcon = (
+    <NavLink
+      className={styles.NavLink}
+      activeClassName={styles.Active}
+      to="/channel/create"
+    >
+      <i className="far fa-plus-square"></i> Add Channel
+    </NavLink>
+  );
+
   const loggedInIcons = (
     <>
       <NavLink
@@ -62,6 +73,7 @@ const NavBar = () => {
       </NavLink>
     </>
   );
+
   const loggedOutIcons = (
     <>
       <NavLink
@@ -95,7 +107,25 @@ const NavBar = () => {
               <img src={logo} alt="logo" height="45" />
             </Navbar.Brand>
           </NavLink>
-          {currentUser && addPostIcon}
+          {currentUser && (
+            <Dropdown>
+              <Dropdown.Toggle
+                className={styles.CustomDropdownToggle}
+                id="dropdown-basic"
+              >
+                <i className="far fa-plus-square"></i>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className={styles.CustomDropdownMenu}>
+                <Dropdown.Item as="div">
+                  {addPostIcon}
+                </Dropdown.Item>
+                <Dropdown.Item as="div">
+                  {addChannelIcon}
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          )}
           <Navbar.Toggle
             ref={ref}
             onClick={() => setExpanded(!expanded)}
