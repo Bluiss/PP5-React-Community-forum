@@ -8,7 +8,6 @@ import appStyles from "../../App.module.css";
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import ChannelsPagePost from "./ChannelsPagePost";
-import Channel from "./Channel";
 
 function ChannelsPage() {
   const { id } = useParams();
@@ -31,7 +30,6 @@ function ChannelsPage() {
   }, [id]);
   return (
     <Row className="h-100">
-        <Channel/>
         <ChannelsPagePost/>
     </Row>
   );
