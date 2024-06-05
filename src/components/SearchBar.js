@@ -1,12 +1,13 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import styles from "../styles/SearchBar.module.css";
+import TitleComponent from "./TitleComponent";
 
 function SearchBar() {
   return (
     <Container fluid className={styles.searchBarContainer}>
       <Row>
-        <Col><h1>Hello world</h1></Col>
+        <TitleComponent/>
       </Row>
     </Container>
   );
