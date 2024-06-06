@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
-
 import Row from "react-bootstrap/Row";
-
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import ChannelsPagePost from "./ChannelsPagePost";
 
 function ChannelsPage() {
   const { id } = useParams();
-  const [setPost] = useState();
+  const [post, setPost] = useState(null);
 
   useEffect(() => {
     const handleMount = async () => {
       try {
-        const [{ data: post }] = await Promise.all([
-          axiosReq.get(`/posts/${id}`),
-        ]);
-        setPost({ results: [post] });
-        console.log(post);
+        const { data: post } = await axiosReq.get(`/channels/${id}`);
+        setPost(post);
+        console.log(post); // Log the post data
       } catch (err) {
         console.log(err);
       }
@@ -25,9 +21,10 @@ function ChannelsPage() {
 
     handleMount();
   }, [id]);
+
   return (
     <Row className="h-100">
-        <ChannelsPagePost/>
+      {post ? <ChannelsPagePost post={post} /> : <div>Loading...</div>}
     </Row>
   );
 }

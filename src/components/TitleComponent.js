@@ -5,7 +5,7 @@ import { axiosReq } from "../api/axiosDefaults";
 const TitleComponent = () => {
   const [title, setTitle] = useState("Threadly");
   const location = useLocation();
-  const { id } = useParams(); // Ensure the id parameter is correctly extracted
+  const { id } = useParams(); 
 
   useEffect(() => {
     const fetchTitle = async () => {
@@ -13,9 +13,9 @@ const TitleComponent = () => {
         if (location.pathname === "/" || location.pathname === "") {
           setTitle("Threadly");
         } else if (id) {
-          const { data } = await axiosReq.get(`/channel/${id}`);
+          const { data } = await axiosReq.get(`/channels/${id}`);
           const channelTitle = data?.title || "Default Title";
-          setTitle(`Threadly - ${channelTitle}`);
+          setTitle({channelTitle});
         } else {
           setTitle("Threadly - No Channel ID");
         }
@@ -26,7 +26,7 @@ const TitleComponent = () => {
     };
 
     fetchTitle();
-  }, [location.pathname, id]); // Ensure id is included in the dependency array
+  }, [location.pathname, id]); 
 
   return <h1>{title}</h1>;
 };

@@ -1,23 +1,39 @@
 import React, { useState } from "react";
 import axios from "axios";
-
-import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Image from "react-bootstrap/Image";
-import Container from "react-bootstrap/Container";
-
-import { Link, useHistory } from "react-router-dom";
-
-import styles from "../../styles/SignInUpForm.module.css";
-import btnStyles from "../../styles/Button.module.css";
-import appStyles from "../../App.module.css";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Alert from "@mui/material/Alert";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useHistory } from "react-router-dom";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
 import { useRedirect } from "../../hooks/useRedirect";
 
-function SignInForm() {
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="https://mui.com/">
+        Your Website
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
+
+const defaultTheme = createTheme();
+
+export default function SignIn() {
   const setCurrentUser = useSetCurrentUser();
   useRedirect("loggedIn");
 
@@ -28,10 +44,15 @@ function SignInForm() {
   const { username, password } = signInData;
 
   const [errors, setErrors] = useState({});
-
   const history = useHistory();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const signInData = {
+      username: data.get("username"),
+      password: data.get("password"),
+    };
 
     try {
       const { data } = await axios.post("/dj-rest-auth/login/", signInData);
@@ -50,74 +71,91 @@ function SignInForm() {
   };
 
   return (
-    <Row className={styles.Row}>
-      <Col className="my-auto p-0 p-md-2" md={6}>
-        <Container className={`${appStyles.Content} p-4 `}>
-          <h1 className={styles.Header}>sign in</h1>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="username">
-              <Form.Label className="d-none">Username</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Username"
-                name="username"
-                className={styles.Input}
-                value={username}
-                onChange={handleChange}
-              />
-            </Form.Group>
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+              value={username}
+              onChange={handleChange}
+            />
             {errors.username?.map((message, idx) => (
-              <Alert key={idx} variant="warning">
+              <Alert key={idx} severity="warning">
                 {message}
               </Alert>
             ))}
-
-            <Form.Group controlId="password">
-              <Form.Label className="d-none">Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                name="password"
-                className={styles.Input}
-                value={password}
-                onChange={handleChange}
-              />
-            </Form.Group>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={handleChange}
+            />
             {errors.password?.map((message, idx) => (
-              <Alert key={idx} variant="warning">
+              <Alert key={idx} severity="warning">
                 {message}
               </Alert>
             ))}
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
             <Button
-              className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright}`}
               type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
             >
-              Sign in
+              Sign In
             </Button>
             {errors.non_field_errors?.map((message, idx) => (
-              <Alert key={idx} variant="warning" className="mt-3">
+              <Alert key={idx} severity="warning" className="mt-3">
                 {message}
               </Alert>
             ))}
-          </Form>
-        </Container>
-        <Container className={`mt-3 ${appStyles.Content}`}>
-          <Link className={styles.Link} to="/signup">
-            Don't have an account? <span>Sign up now!</span>
-          </Link>
-        </Container>
-      </Col>
-      <Col
-        md={6}
-        className={`my-auto d-none d-md-block p-2 ${styles.SignInCol}`}
-      >
-        <Image
-          className={`${appStyles.FillerImage}`}
-          src={"https://codeinstitute.s3.amazonaws.com/AdvancedReact/hero.jpg"}
-        />
-      </Col>
-    </Row>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/signup" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
   );
 }
-
-export default SignInForm;

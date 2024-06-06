@@ -22,6 +22,8 @@ const Post = (props) => {
     updated_at,
     postPage,
     setPosts,
+    channel_display_title
+
   } = props;
 
   const currentUser = useCurrentUser();
@@ -77,6 +79,7 @@ const Post = (props) => {
     <Card className={styles.Post}>
       <Card.Body>
         <Media className="align-items-center justify-content-between">
+        {channel_display_title && <Card.Text>{channel_display_title}</Card.Text>}
           <Link to={`/profiles/${profile_id}`}>
             <Avatar src={profile_image} height={55} />
             {owner}
