@@ -17,6 +17,7 @@ import UserPasswordForm from "./pages/profiles/UserPasswordForm";
 import ProfileEditForm from "./pages/profiles/ProfileEditForm";
 import ChannelsPage from "./pages/channels/ChannelsPage"
 import ChannelCreateForm from "./pages/channels/ChannelCreateForm";
+import TestComponent from "./components/TestComponent";
 
 function App() {
   const currentUser = useCurrentUser();
@@ -64,6 +65,7 @@ function App() {
           <Route exact path="/profiles/:id" render={() => <ProfilePage />} />
           <Route exact path="/channel/create" render={() => <ChannelCreateForm/>} />
           <Route exact path="/channels/:id" render={() => <ChannelsPage/>} />
+          <Route exact path="/test/:id"  render={() => <TestComponent/>} />
           <Route
             exact
             path="/profiles/:id/edit/username"

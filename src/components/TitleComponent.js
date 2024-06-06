@@ -1,34 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { axiosReq } from "../api/axiosDefaults";
+import { BrowserRouter as Router, Route, Switch, useParams, useLocation } from "react-router-dom";
+import axios from "axios"; 
+import styles from "../styles/Title.module.css"; 
 
 const TitleComponent = () => {
-  const [title, setTitle] = useState("Threadly");
+  const { id } = useParams();
   const location = useLocation();
-  const { id } = useParams(); 
+  const [title, setTitle] = useState("Loading...");
 
   useEffect(() => {
     const fetchTitle = async () => {
-      try {
-        if (location.pathname === "/" || location.pathname === "") {
-          setTitle("Threadly");
-        } else if (id) {
-          const { data } = await axiosReq.get(`/channels/${id}`);
+      if (location.pathname === "/") {
+        setTitle("Threadly");
+      } else if (id) {
+        try {
+          const { data } = await axios.get(`/channels/${id}`); 
           const channelTitle = data?.title || "Default Title";
-          setTitle({channelTitle});
-        } else {
-          setTitle("Threadly - No Channel ID");
+          setTitle(channelTitle);
+        } catch (error) {
+          console.error("Error fetching channel title:", error);
+          setTitle("Error fetching title");
         }
-      } catch (error) {
-        console.error("Error fetching channel title:", error);
-        setTitle("Threadly - Error fetching title");
       }
     };
 
     fetchTitle();
-  }, [location.pathname, id]); 
+  }, [id, location.pathname]);
 
-  return <h1>{title}</h1>;
+  console.log("TitleComponent ID:", id);
+  console.log("Location Pathname:", location.pathname);
+  return <h1 className={styles.title}>{title}</h1>; 
 };
 
-export default TitleComponent;
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={TitleComponent} />
+        <Route path="/channels/:id" component={TitleComponent} /> 
+      </Switch>
+    </Router>
+  );
+};
+
+export default App;

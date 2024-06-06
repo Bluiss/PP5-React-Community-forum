@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import ChannelsPagePost from "./ChannelsPagePost";
+import PostPage from "../posts/PostPage";
 
 function ChannelsPage() {
   const { id } = useParams();
@@ -24,7 +25,7 @@ function ChannelsPage() {
 
   return (
     <Row className="h-100">
-      {post ? <ChannelsPagePost post={post} /> : <div>Loading...</div>}
+      {PostPage ? <ChannelsPagePost post={post} /> : <div>Loading...</div>}
     </Row>
   );
 }
