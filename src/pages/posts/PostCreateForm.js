@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -6,27 +7,40 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 import Image from "react-bootstrap/Image";
-import Asset from "../../components/Asset";
-import Upload from "../../assets/upload.png";
-import styles from "../../styles/PostCreateEditForm.module.css";
-import appStyles from "../../App.module.css";
+import Asset from "../../components/Asset"; 
+import Upload from "../../assets/upload.png"; 
+import styles from "../../styles/PostCreateEditForm.module.css"; 
+import appStyles from "../../App.module.css"; 
 import btnStyles from "../../styles/Button.module.css";
-import { useHistory } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
-import { useRedirect } from "../../hooks/useRedirect";
+import { axiosReq } from "../../api/axiosDefaults"; 
+
 
 function PostCreateForm() {
-  useRedirect('loggedOut')
   const [errors, setErrors] = useState({});
+  const [channels, setChannels] = useState([]); // State to store channels
   const [postData, setPostData] = useState({
     title: "",
     content: "",
     image: "",
-    channel_title: "", 
+    channel: "", // Change channel_title to channel
   });
-  const { title, content, image, channel_title } = postData; 
+  const { title, content, image, channel } = postData; // Update destructuring
   const imageInput = useRef(null);
   const history = useHistory();
+
+  useEffect(() => {
+    // Fetch channels when the component mounts
+    const fetchChannels = async () => {
+      try {
+        const response = await axiosReq.get("https://pp5-api-community-forum-77bcfdc8891c.herokuapp.com/channels/");
+        setChannels(response.data);
+      } catch (error) {
+        console.error("Error fetching channels:", error);
+      }
+    };
+
+    fetchChannels();
+  }, []);
 
   const handleChange = (event) => {
     setPostData({
@@ -50,16 +64,16 @@ function PostCreateForm() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("channel_title", channel_title);
-  
+    formData.append("channel", channel); // Use channel for the selected channel ID
+
     if (imageInput.current?.files[0]) {
       formData.append("image", imageInput.current.files[0]);
     }
-  
+
     for (let pair of formData.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
+      console.log(pair[0] + ': ' + pair[1]);
     }
-  
+
     try {
       const { data } = await axiosReq.post("/posts/", formData, {
         headers: {
@@ -81,7 +95,7 @@ function PostCreateForm() {
   const textFields = (
     <div className="text-center">
       <Form.Group>
-        <Form.Label>Channel Title</Form.Label>
+        <Form.Label>Post Title</Form.Label>
         <Form.Control
           type="text"
           name="title"
@@ -114,11 +128,18 @@ function PostCreateForm() {
       <Form.Group>
         <Form.Label>Channel</Form.Label>
         <Form.Control
-          type="text"
-          name="channel_title"
-          value={channel_title}
+          as="select"
+          name="channel"
+          value={channel}
           onChange={handleChange}
-        />
+        >
+          <option value="">Select a channel</option>
+          {channels.map((chan) => (
+            <option key={chan.id} value={chan.id}>
+              {chan.title}
+            </option>
+          ))}
+        </Form.Control>
       </Form.Group>
       {errors?.channel?.map((message, idx) => (
         <Alert variant="warning" key={idx}>
@@ -130,10 +151,10 @@ function PostCreateForm() {
         className={`${btnStyles.Button} ${btnStyles.Blue}`}
         onClick={() => history.goBack()}
       >
-        cancel
+        Cancel
       </Button>
       <Button className={`${btnStyles.Button} ${btnStyles.Blue}`} type="submit">
-        create
+        Create
       </Button>
     </div>
   );

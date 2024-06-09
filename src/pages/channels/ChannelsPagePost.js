@@ -6,35 +6,60 @@ import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import appStyles from "../../App.module.css";
 
-function ChannelsPagePost() {
-  const { id } = useParams();
-  const [post, setPost] = useState(null);
+function ChannelsPagePosts() {
+  const { channelId } = useParams(); // Extracting 'channelId' from the URL
+  const [channel, setChannel] = useState(null); // State for channel details
+  const [posts, setPosts] = useState([]); // State for posts related to the channel
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
-    const handleMount = async () => {
+    const fetchChannelData = async () => {
       try {
-        const response = await axiosReq.get(`/posts/${id}`);
-        setPost(response.data);
+        const response = await axiosReq.get(`/channels/${channelId}`); // Fetching channel details and its posts
+        console.log('API Response:', response.data); // Log the full API response
+        setChannel(response.data);
+        setPosts(response.data.posts); // Assuming the API returns posts within the channel data
+        setHasLoaded(true);
         console.log(response.data);
       } catch (err) {
         console.error(err);
       }
     };
 
-    handleMount();
-  }, [id]);
+    fetchChannelData();
+  }, [channelId]);
 
   return (
     <Container className={appStyles.Content}>
       <Row>
         <Col>
-          {post ? (
-            <div>
-              <h1>{post.title}</h1>
-              <p>{post.content}</p>
-              <p>{post.channel_display_title}</p>
-              {post.image && <img src={post.image} alt={post.title} className={appStyles.Image} />}
-            </div>
+          {hasLoaded ? (
+            channel ? (
+              <div>
+                <h1>{channel.title}</h1>
+                <p>{channel.description}</p> {/* Displaying channel details */}
+                <h2>Posts</h2>
+                {posts.length ? (
+                  posts.map((post) => (
+                    <div key={post.id} className={appStyles.Post}>
+                      <h3>{post.title}</h3>
+                      <p>{post.content}</p>
+                      {post.image && (
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className={appStyles.Image}
+                        />
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p>No posts available for this channel.</p>
+                )}
+              </div>
+            ) : (
+              <p>Channel not found.</p>
+            )
           ) : (
             <p>Loading...</p>
           )}
@@ -44,4 +69,4 @@ function ChannelsPagePost() {
   );
 }
 
-export default ChannelsPagePost;
+export default ChannelsPagePosts;

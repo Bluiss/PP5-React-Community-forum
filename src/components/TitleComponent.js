@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch, useParams, useLocation } from "react-router-dom";
 import axios from "axios"; 
-import styles from "../styles/Title.module.css"; 
 
 const TitleComponent = () => {
   const { id } = useParams();
@@ -27,9 +26,7 @@ const TitleComponent = () => {
     fetchTitle();
   }, [id, location.pathname]);
 
-  console.log("TitleComponent ID:", id);
-  console.log("Location Pathname:", location.pathname);
-  return <h1 className={styles.title}>{title}</h1>; 
+  return <h1 className={title}>{title}</h1>;
 };
 
 const App = () => {
@@ -37,7 +34,7 @@ const App = () => {
     <Router>
       <Switch>
         <Route exact path="/" component={TitleComponent} />
-        <Route path="/channels/:id" component={TitleComponent} /> 
+        <Route exact path="/channels/:id" component={TitleComponent} />
       </Switch>
     </Router>
   );
