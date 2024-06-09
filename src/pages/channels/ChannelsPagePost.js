@@ -1,72 +1,51 @@
-import React, { useEffect, useState } from "react";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
-import { useParams } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
-import appStyles from "../../App.module.css";
+import React from "react";
+import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap CSS is imported
 
-function ChannelsPagePosts() {
-  const { channelId } = useParams(); // Extracting 'channelId' from the URL
-  const [channel, setChannel] = useState(null); // State for channel details
-  const [posts, setPosts] = useState([]); // State for posts related to the channel
-  const [hasLoaded, setHasLoaded] = useState(false);
+function ChannelsPagePost({ post }) {
+  console.log('ChannelsPagePost received post:', post); // Debug the received post data
 
-  useEffect(() => {
-    const fetchChannelData = async () => {
-      try {
-        const response = await axiosReq.get(`/channels/${channelId}`); // Fetching channel details and its posts
-        console.log('API Response:', response.data); // Log the full API response
-        setChannel(response.data);
-        setPosts(response.data.posts); // Assuming the API returns posts within the channel data
-        setHasLoaded(true);
-        console.log(response.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchChannelData();
-  }, [channelId]);
+  if (!post) {
+    return <p>Loading post details...</p>;
+  }
 
   return (
-    <Container className={appStyles.Content}>
-      <Row>
-        <Col>
-          {hasLoaded ? (
-            channel ? (
-              <div>
-                <h1>{channel.title}</h1>
-                <p>{channel.description}</p> {/* Displaying channel details */}
-                <h2>Posts</h2>
-                {posts.length ? (
-                  posts.map((post) => (
-                    <div key={post.id} className={appStyles.Post}>
-                      <h3>{post.title}</h3>
-                      <p>{post.content}</p>
-                      {post.image && (
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className={appStyles.Image}
-                        />
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <p>No posts available for this channel.</p>
-                )}
-              </div>
-            ) : (
-              <p>Channel not found.</p>
-            )
-          ) : (
-            <p>Loading...</p>
+    <div className="container mt-4">
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title">{post.title}</h2>
+          <p className="card-text">{post.description}</p>
+          {post.image && (
+            <img
+              src={post.image}
+              alt={post.title}
+              className="img-fluid mt-3"
+            />
           )}
-        </Col>
-      </Row>
-    </Container>
+          <h3 className="mt-4">Posts</h3>
+          {post.posts.length ? (
+            post.posts.map((individualPost) => (
+              <div key={individualPost.id} className="card mb-3">
+                <div className="card-body">
+                  <h4 className="card-title">{individualPost.title}</h4>
+                  <p className="card-text">{individualPost.content}</p>
+                  {individualPost.image && (
+                    <img
+                      src={individualPost.image}
+                      alt={individualPost.title}
+                      className="img-fluid"
+                    />
+                  )}
+                  <p className="card-text"><small className="text-muted">Created at: {individualPost.created_at}</small></p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No posts available for this channel.</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default ChannelsPagePosts;
+export default ChannelsPagePost;

@@ -3,19 +3,25 @@ import Row from "react-bootstrap/Row";
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import ChannelsPagePost from "./ChannelsPagePost";
-import PostPage from "../posts/PostPage";
 
 function ChannelsPage() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const handleMount = async () => {
       try {
-        const { data: post } = await axiosReq.get(`/channels/${id}`);
-        setPost(post);
-        console.log(post); // Log the post data
+        if (id) {
+          const url = `/channels/${id}`;
+          console.log(`Constructed URL: ${url}`); // Debugging line
+          const { data: post } = await axiosReq.get(`/channels/${id}`);
+          setPost(post);
+        } else {
+          throw new Error("Channel ID is missing");
+        }
       } catch (err) {
+        setError(err);
         console.log(err);
       }
     };
@@ -23,9 +29,13 @@ function ChannelsPage() {
     handleMount();
   }, [id]);
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <Row className="h-100">
-      {PostPage ? <ChannelsPagePost post={post} /> : <div>Loading...</div>}
+      {post ? <ChannelsPagePost post={post} /> : <div>Loading...</div>}
     </Row>
   );
 }
