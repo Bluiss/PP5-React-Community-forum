@@ -17,6 +17,26 @@ const Channel = (props) => {
       <div className={`mx-2`}>
         <strong>{title}</strong>
       </div>
+      <div className={`text-right ${!mobile && "ml-auto"}`}>
+        {!mobile &&
+          currentUser &&
+          !is_owner &&
+          (following_id ? (
+            <Button
+              className={`${btnStyles.Button} ${btnStyles.BlackOutline}`}
+              onClick={() => handleUnfollow(channel)}
+              >
+              unfollow
+            </Button>
+          ) : (
+            <Button
+              className={`${btnStyles.Button} ${btnStyles.Black}`}
+              onClick={() => handleFollow(channel)}
+            >
+              follow
+            </Button>
+          ))}
+      </div>
     </div>
   );
 };

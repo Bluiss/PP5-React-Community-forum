@@ -18,11 +18,19 @@ export const ChannelDataProvider = ({ children }) => {
   const currentUser = useCurrentUser();
 
   const handleFollow = async (clickedChannel) => {
+    // Check if the user is already following the channel
+    if (clickedChannel.following_id) {
+      console.log("User is already following this channel. Skipping follow request.");
+      return;
+    }
+  
     try {
-      const { data } = await axiosRes.post("/followers/", {
-        followed: clickedChannel.id,
-      });
-
+      const payload = { followed: clickedChannel.id };
+      console.log('Payload:', payload);
+  
+      const { data } = await axiosRes.post("/followers/", payload);
+      console.log('Follow API response:', data);
+  
       setChannelData((prevState) => ({
         ...prevState,
         pageChannel: {
@@ -38,7 +46,18 @@ export const ChannelDataProvider = ({ children }) => {
         },
       }));
     } catch (err) {
-      console.log(err);
+      if (err.response) {
+        if (err.response.data.detail === "possible duplicate") {
+          console.warn("You are already following this channel.");
+          // Optionally, update UI or state to reflect the duplicate follow attempt
+        } else {
+          console.error('API Error:', err.response.data);
+        }
+      } else if (err.request) {
+        console.error('Request Error:', err.request);
+      } else {
+        console.error('General Error:', err.message);
+      }
     }
   };
 
