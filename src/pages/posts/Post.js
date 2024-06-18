@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../../styles/Post.module.css";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import { Card, Media, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Card, OverlayTrigger, Tooltip, Row, Col } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import { axiosRes } from "../../api/axiosDefaults";
@@ -23,8 +23,6 @@ const Post = (props) => {
     postPage,
     setPosts,
     channel_display_title,
-    channel_id
-
   } = props;
 
   const currentUser = useCurrentUser();
@@ -76,20 +74,22 @@ const Post = (props) => {
     }
   };
 
-  console.log(props)
-
   return (
-    <Card className={styles.Post}>
-      <Card.Body>
-        <Media className="align-items-center justify-content-between">
-          <Link to={`/channels/${id}`}>
-            {channel_display_title && <Card.Text>{channel_display_title}</Card.Text>}
-          </Link>
-          <Link to={`/profiles/${profile_id}`}>
-            <Avatar src={profile_image} height={55} />
-            {owner}
-          </Link>
-          <div className="d-flex align-items-center">
+    <Card className={`${styles.Post} mb-4`}>
+      <Card.Body className="p-3">
+        <Link to={`/posts/${id}`}>
+          <Card.Img variant="top" src={image} alt={title} className="mb-3" />
+        </Link>
+        <Card.Title className="text-center">{title}</Card.Title>
+        <Card.Text>{content}</Card.Text>
+        <Row className="align-items-center justify-content-between mb-2">
+          <Col xs="auto">
+            <Link to={`/profiles/${profile_id}`}>
+              <Avatar src={profile_image} height={55} />
+              <span className="ml-2">{owner}</span>
+            </Link>
+          </Col>
+          <Col xs="auto" className="text-right">
             <span>{updated_at}</span>
             {is_owner && postPage && (
               <MoreDropdown
@@ -97,16 +97,20 @@ const Post = (props) => {
                 handleDelete={handleDelete}
               />
             )}
+          </Col>
+        </Row>
+        {channel_display_title && (
+          <div className="text-center mb-3">
+            <Link to={`/channels/${id}`}>
+              <Card.Text className="font-weight-bold">
+                {channel_display_title}
+              </Card.Text>
+            </Link>
           </div>
-        </Media>
+        )}
       </Card.Body>
-      <Link to={`/posts/${id}`}>
-        <Card.Img src={image} alt={title} />
-      </Link>
-      <Card.Body>
-        {title && <Card.Title className="text-center">{title}</Card.Title>}
-        {content && <Card.Text>{content}</Card.Text>}
-        <div className={styles.PostBar}>
+      <Card.Footer className="d-flex justify-content-between align-items-center">
+        <div className="d-flex align-items-center">
           {is_owner ? (
             <OverlayTrigger
               placement="top"
@@ -115,11 +119,11 @@ const Post = (props) => {
               <i className="far fa-heart" />
             </OverlayTrigger>
           ) : like_id ? (
-            <span onClick={handleUnlike}>
+            <span onClick={handleUnlike} className="cursor-pointer">
               <i className={`fas fa-heart ${styles.Heart}`} />
             </span>
           ) : currentUser ? (
-            <span onClick={handleLike}>
+            <span onClick={handleLike} className="cursor-pointer">
               <i className={`far fa-heart ${styles.HeartOutline}`} />
             </span>
           ) : (
@@ -130,13 +134,15 @@ const Post = (props) => {
               <i className="far fa-heart" />
             </OverlayTrigger>
           )}
-          {likes_count}
-          <Link to={`/posts/${id}`}>
-            <i className="far fa-comments" />
-          </Link>
-          {comments_count}
+          <span className="ml-2">{likes_count}</span>
         </div>
-      </Card.Body>
+        <div className="d-flex align-items-center">
+          <Link to={`/posts/${id}`} className="d-flex align-items-center">
+            <i className="far fa-comments" />
+            <span className="ml-2">{comments_count}</span>
+          </Link>
+        </div>
+      </Card.Footer>
     </Card>
   );
 };
