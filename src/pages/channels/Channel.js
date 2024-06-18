@@ -1,11 +1,20 @@
-// src/pages/channels/Channel.js
 import React from "react";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
+import { Button } from "react-bootstrap";
+import { useCurrentUser } from "../../contexts/CurrentUserContext";
+import { useSetChannelData } from "../../contexts/ChannelDataContext"; 
+import styles from "../../styles/Profile.module.css"; 
+import btnStyles from "../../styles/Button.module.css"; 
 
 const Channel = (props) => {
   const { channel, mobile, imageSize = 55 } = props;
-  const { id, title, image } = channel;
+  const { id, following_id, image, owner, title } = channel;
+
+  const currentUser = useCurrentUser();
+  const is_owner = currentUser?.username === owner;
+
+  const { handleFollow, handleUnfollow } = useSetChannelData();
 
   return (
     <div className={`my-3 d-flex align-items-center ${mobile && "flex-column"}`}>
@@ -14,7 +23,7 @@ const Channel = (props) => {
           <Avatar src={image} height={imageSize} />
         </Link>
       </div>
-      <div className={`mx-2`}>
+      <div className={`mx-2 ${styles.WordBreak}`}> 
         <strong>{title}</strong>
       </div>
       <div className={`text-right ${!mobile && "ml-auto"}`}>
@@ -23,17 +32,17 @@ const Channel = (props) => {
           !is_owner &&
           (following_id ? (
             <Button
-              className={`${btnStyles.Button} ${btnStyles.BlackOutline}`}
+              className={`${btnStyles.Button} ${btnStyles.BlackOutline}`} 
               onClick={() => handleUnfollow(channel)}
-              >
-              unfollow
+            >
+              Unfollow
             </Button>
           ) : (
             <Button
-              className={`${btnStyles.Button} ${btnStyles.Black}`}
+              className={`${btnStyles.Button} ${btnStyles.Black}`} // Apply consistent button styles
               onClick={() => handleFollow(channel)}
             >
-              follow
+              Follow
             </Button>
           ))}
       </div>

@@ -14,7 +14,7 @@ function ChannelsPage() {
       try {
         if (id) {
           const url = `/channels/${id}`;
-          console.log(`Constructed URL: ${url}`); // Debugging line
+          console.log(`Constructed URL: ${url}`); 
           const { data: post } = await axiosReq.get(`/channels/${id}`);
           setPost(post);
         } else {

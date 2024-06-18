@@ -22,7 +22,8 @@ const Post = (props) => {
     updated_at,
     postPage,
     setPosts,
-    channel_display_title
+    channel_display_title,
+    channel_id
 
   } = props;
 
@@ -75,11 +76,15 @@ const Post = (props) => {
     }
   };
 
+  console.log(props)
+
   return (
     <Card className={styles.Post}>
       <Card.Body>
         <Media className="align-items-center justify-content-between">
-        {channel_display_title && <Card.Text>{channel_display_title}</Card.Text>}
+          <Link to={`/channels/${id}`}>
+            {channel_display_title && <Card.Text>{channel_display_title}</Card.Text>}
+          </Link>
           <Link to={`/profiles/${profile_id}`}>
             <Avatar src={profile_image} height={55} />
             {owner}
