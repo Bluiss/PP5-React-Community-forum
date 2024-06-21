@@ -8,7 +8,6 @@ import Profile from "./Profile";
 
 const PopularProfiles = ({ mobile }) => {
   const { popularProfiles } = useProfileData();
-  console.log(popularProfiles.results);
 
 
   return (

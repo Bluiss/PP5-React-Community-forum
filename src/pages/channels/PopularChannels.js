@@ -8,7 +8,6 @@ import Asset from "../../components/Asset";
 const PopularChannels = ({ mobile }) => {
   const { popularChannel } = useChannelData(); 
 
-  console.log("Popular Channels Data:", popularChannel);
 
   const hasChannels = popularChannel && popularChannel.results && popularChannel.results.length > 0;
 
