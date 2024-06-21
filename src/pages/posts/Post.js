@@ -90,7 +90,11 @@ const Post = (props) => {
             </Link>
           </Col>
           <Col xs="auto" className="text-right">
-            <span>{updated_at}</span>
+            <span><Link to={`/channels/${id}`}>
+              <Card.Text className="font-weight-bold">
+                {channel_display_title}
+              </Card.Text>
+            </Link></span>
             {is_owner && postPage && (
               <MoreDropdown
                 handleEdit={handleEdit}
@@ -101,11 +105,10 @@ const Post = (props) => {
         </Row>
         {channel_display_title && (
           <div className="text-center mb-3">
-            <Link to={`/channels/${id}`}>
               <Card.Text className="font-weight-bold">
-                {channel_display_title}
+                {updated_at}
               </Card.Text>
-            </Link>
+
           </div>
         )}
       </Card.Body>
