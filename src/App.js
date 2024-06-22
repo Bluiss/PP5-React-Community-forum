@@ -73,7 +73,7 @@ function App() {
           <Route exact path="/posts/:id/edit" render={() => <PostEditForm />} />
           <Route exact path="/profiles/:id" render={() => <ProfilePage />} />
           <Route exact path="/channel/create" render={() => <ChannelCreateForm/>} />
-          <Route exact path="/channels/:id" render={() => <ChannelsPage/>} />
+          <Route exact path="/channels/:title" component={ChannelsPage} />
           <Route
             exact
             path="/profiles/:id/edit/username"

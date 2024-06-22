@@ -23,21 +23,19 @@ const Post = (props) => {
     channel_display_title,
     vote_count: initialVoteCount,
     user_vote: initialUserVote,
-    like_id, // Add this line
-    likes_count, // Add this line
+    like_id,
+    likes_count,
   } = props;
 
   const currentUser = useCurrentUser();
   const is_owner = currentUser?.username === owner;
   const history = useHistory();
 
-  // Initialize states
   const [voteCount, setVoteCount] = useState(initialVoteCount || 0);
   const [userVote, setUserVote] = useState(initialUserVote || 0);
   const [showTooltip, setShowTooltip] = useState(false);
-  const heartRef = useRef(null); // Ref for heart icon to position the tooltip
+  const heartRef = useRef(null);
 
-  // Fetch and initialize post data when component mounts
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -49,13 +47,11 @@ const Post = (props) => {
       }
     };
 
-    // Only fetch post data if on the post page
     if (postPage) {
       fetchPostData();
     }
   }, [id, postPage]);
 
-  // Function to handle editing the post
   const handleEdit = () => {
     history.push(`/posts/${id}/edit`);
   };
@@ -92,7 +88,6 @@ const Post = (props) => {
     }
   };
 
-  // Function to handle deleting the post
   const handleDelete = async () => {
     try {
       await axiosRes.delete(`/posts/${id}/`);
@@ -102,21 +97,16 @@ const Post = (props) => {
     }
   };
 
-  // Function to handle voting
   const handleVote = async (voteType) => {
-    // Prevent voting again in the same direction
     if (userVote === voteType) {
       return;
     }
 
     try {
-      console.log("Sending vote request to /votes/ with data:", { post: id, vote_type: voteType });
       await axiosRes.post("/votes/", { post: id, vote_type: voteType });
 
-      // Update local state immediately after vote
       setUserVote(voteType);
       setVoteCount((prevVoteCount) => {
-        // Calculate new vote count
         const validPrevVoteCount = isNaN(prevVoteCount) ? 0 : prevVoteCount;
         const validVoteType = isNaN(voteType) ? 0 : voteType;
         const validUserVote = isNaN(userVote) ? 0 : userVote;
@@ -124,14 +114,13 @@ const Post = (props) => {
         return validPrevVoteCount + validVoteType - validUserVote;
       });
 
-      // Update parent component's state (if applicable)
       setPosts((prevPosts) => ({
         ...prevPosts,
         results: prevPosts.results.map((post) => {
           if (post.id === id) {
             const currentVoteCount = post.vote_count ?? 0;
             const newVoteCount = userVote
-              ? currentVoteCount - userVote + voteType // Adjust the vote count if there was a previous vote
+              ? currentVoteCount - userVote + voteType
               : currentVoteCount + voteType;
 
             return {
@@ -164,21 +153,19 @@ const Post = (props) => {
             </Link>
           </Col>
           <Col xs="auto" className="text-right">
-            <span>
-              <Link to={`/channels/${id}`}>
+            {channel_display_title && (
+              <Link to={`/channels/${channel_display_title}`}>
                 <Card.Text className="font-weight-bold">{channel_display_title}</Card.Text>
               </Link>
-            </span>
+            )}
             {is_owner && postPage && (
               <MoreDropdown handleEdit={handleEdit} handleDelete={handleDelete} />
             )}
           </Col>
         </Row>
-        {channel_display_title && (
-          <div className="text-center mb-3">
-            <Card.Text className="font-weight-bold">{updated_at}</Card.Text>
-          </div>
-        )}
+        <div className="text-center mb-3">
+          <Card.Text className="font-weight-bold">{updated_at}</Card.Text>
+        </div>
       </Card.Body>
       <Card.Footer className="d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center">

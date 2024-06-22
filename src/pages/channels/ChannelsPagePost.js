@@ -11,28 +11,27 @@ import appStyles from "../../App.module.css";
 import { fetchMoreData } from "../../utils/utils";
 import TopPosters from "../../components/TopPosters";
 
-function ChannelsPagePost({ message, filter = "" }) {
-  const { id } = useParams(); // Get the channel ID from the URL
+function ChannelsPagePost({ message }) {
+  const { title } = useParams();
   const [posts, setPosts] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const { pathname } = useLocation();
   const [query, setQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("-created_at"); // Default to newest
-
+  const [sortOrder, setSortOrder] = useState("-created_at");
 
   useEffect(() => {
-    if (id) {
+    if (title) {
       const fetchPosts = async () => {
         try {
-          // Construct the API URL with channel filtering
-          const url = `/posts/?channel=${id}`;
-
-          // Fetch posts filtered by channel ID and other parameters
-          const { data } = await axiosReq.get(url);
-          setPosts(data);
+          // Update the URL to use channel__title
+          const url = `/posts/?channel__title=${title}&ordering=${sortOrder}`;
+          console.log(`Constructed URL for posts: ${url}`); 
+          const response = await axiosReq.get(url);
+          console.log('Posts API Response:', response);  // Log the entire response
+          setPosts(response.data);
           setHasLoaded(true);
         } catch (err) {
-          console.log("Error:", err); // Log the error to see what went wrong
+          console.error("Error fetching posts data:", err);
         }
       };
 
@@ -45,16 +44,15 @@ function ChannelsPagePost({ message, filter = "" }) {
         clearTimeout(timer);
       };
     } else {
-      console.log("Channel ID is undefined, skipping fetchPosts");
+      console.error("Channel title is undefined, skipping fetchPosts");
     }
-  }, [filter, query, pathname, sortOrder, id]); // Include channelId as a dependency
+  }, [query, pathname, sortOrder, title]);
 
   return (
     <Row className="h-100">
       <Col className="py-2 p-0 p-lg-2" lg={8}>
         <PopularProfiles mobile />
 
-        {/* Flexbox Row for sort and search controls */}
         <div className="d-flex justify-content-between align-items-center mb-3 pr-1">
           <div>
             <Dropdown>
@@ -80,7 +78,6 @@ function ChannelsPagePost({ message, filter = "" }) {
           </div>
         </div>
 
-        {/* Content display */}
         {hasLoaded ? (
           <>
             {posts.results.length ? (
@@ -108,7 +105,7 @@ function ChannelsPagePost({ message, filter = "" }) {
       </Col>
       <Col md={4} className="d-none d-lg-block p-0 p-lg-2">
         <PopularProfiles />
-        <TopPosters/>
+        <TopPosters />
       </Col>
     </Row>
   );

@@ -3,30 +3,30 @@ import { BrowserRouter as Router, Route, Switch, useParams, useLocation } from "
 import axios from "axios"; 
 
 const TitleComponent = () => {
-  const { id } = useParams();
+  const { title } = useParams(); // Get the 'title' parameter from the URL
   const location = useLocation();
-  const [title, setTitle] = useState("Loading...");
+  const [pageTitle, setPageTitle] = useState("Loading..."); // Rename to avoid conflict
 
   useEffect(() => {
     const fetchTitle = async () => {
       if (location.pathname === "/") {
-        setTitle("Threadly");
-      } else if (id) {
+        setPageTitle("Threadly");
+      } else if (title) { // Correctly check for 'title'
         try {
-          const { data } = await axios.get(`/channels/${id}`); 
+          const { data } = await axios.get(`/channels/title/${title}`); // Correct URL
           const channelTitle = data?.title || "Default Title";
-          setTitle(channelTitle);
+          setPageTitle(channelTitle);
         } catch (error) {
           console.error("Error fetching channel title:", error);
-          setTitle("Error fetching title");
+          setPageTitle("Error fetching title");
         }
       }
     };
 
     fetchTitle();
-  }, [id, location.pathname]);
+  }, [title, location.pathname]); // Update dependencies
 
-  return <h1 className={title}>{title}</h1>;
+  return <h1 className={pageTitle}>{pageTitle}</h1>; // Use 'pageTitle' for the content
 };
 
 const App = () => {
@@ -34,7 +34,7 @@ const App = () => {
     <Router>
       <Switch>
         <Route exact path="/" component={TitleComponent} />
-        <Route exact path="/channels/:id" component={TitleComponent} />
+        <Route exact path="/channels/:title" component={TitleComponent} /> {/* Use 'title' for the dynamic part */}
       </Switch>
     </Router>
   );
