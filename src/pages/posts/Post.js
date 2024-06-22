@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "../../styles/Post.module.css";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import { Card, Row, Col, OverlayTrigger, Tooltip } from "react-bootstrap"; // Add OverlayTrigger and Tooltip imports
+import { Card, Row, Col, Tooltip, Overlay } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import { axiosRes } from "../../api/axiosDefaults";
@@ -34,6 +34,8 @@ const Post = (props) => {
   // Initialize states
   const [voteCount, setVoteCount] = useState(initialVoteCount || 0);
   const [userVote, setUserVote] = useState(initialUserVote || 0);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const heartRef = useRef(null); // Ref for heart icon to position the tooltip
 
   // Fetch and initialize post data when component mounts
   useEffect(() => {
@@ -196,12 +198,16 @@ const Post = (props) => {
         </div>
         <div className={styles.PostBar}>
           {is_owner ? (
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip>You can't like your own post!</Tooltip>}
-            >
-              <i className="far fa-heart" />
-            </OverlayTrigger>
+            <>
+              <i className="far fa-heart" ref={heartRef} onMouseOver={() => setShowTooltip(true)} onMouseOut={() => setShowTooltip(false)} />
+              <Overlay target={heartRef.current} show={showTooltip} placement="top">
+                {(props) => (
+                  <Tooltip id="overlay-example" {...props}>
+                    You can't like your own post!
+                  </Tooltip>
+                )}
+              </Overlay>
+            </>
           ) : like_id ? (
             <span onClick={handleUnlike}>
               <i className={`fas fa-heart ${styles.Heart}`} />
@@ -211,12 +217,16 @@ const Post = (props) => {
               <i className={`far fa-heart ${styles.HeartOutline}`} />
             </span>
           ) : (
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip>Log in to like posts!</Tooltip>}
-            >
-              <i className="far fa-heart" />
-            </OverlayTrigger>
+            <>
+              <i className="far fa-heart" ref={heartRef} onMouseOver={() => setShowTooltip(true)} onMouseOut={() => setShowTooltip(false)} />
+              <Overlay target={heartRef.current} show={showTooltip} placement="top">
+                {(props) => (
+                  <Tooltip id="overlay-example" {...props}>
+                    Log in to like posts!
+                  </Tooltip>
+                )}
+              </Overlay>
+            </>
           )}
           {likes_count}
         </div>
