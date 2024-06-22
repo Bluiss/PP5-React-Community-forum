@@ -1,49 +1,116 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Form, Col, Row, Container, Dropdown } from "react-bootstrap";
+import { useLocation, useParams } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { axiosReq } from "../../api/axiosDefaults";
+import Post from "../posts/Post";
+import Asset from "../../components/Asset";
+import PopularProfiles from "../profiles/PopularProfiles";
+import PopularChannels from "../channels/PopularChannels";
+import NoResults from "../../assets/no-results.png";
+import appStyles from "../../App.module.css";
+import { fetchMoreData } from "../../utils/utils";
 
-function ChannelsPagePost({ post }) {
-  console.log('ChannelsPagePost received post:', post);
+function ChannelsPagePost({ message, filter = "" }) {
+  const { id } = useParams(); // Get the channel ID from the URL
+  const [posts, setPosts] = useState({ results: [] });
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const { pathname } = useLocation();
+  const [query, setQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState("-created_at"); // Default to newest
 
-  if (!post) {
-    return <p>Loading post details...</p>;
-  }
+
+  useEffect(() => {
+    if (id) {
+      const fetchPosts = async () => {
+        try {
+          // Construct the API URL with channel filtering
+          const url = `/posts/?channel=${id}`;
+
+          // Fetch posts filtered by channel ID and other parameters
+          const { data } = await axiosReq.get(url);
+          setPosts(data);
+          setHasLoaded(true);
+        } catch (err) {
+          console.log("Error:", err); // Log the error to see what went wrong
+        }
+      };
+
+      setHasLoaded(false);
+      const timer = setTimeout(() => {
+        fetchPosts();
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      console.log("Channel ID is undefined, skipping fetchPosts");
+    }
+  }, [filter, query, pathname, sortOrder, id]); // Include channelId as a dependency
 
   return (
-    <div className="container mt-4">
-      <div className="card">
-        <div className="card-body">
-          <h2 className="card-title">{post.title}</h2>
-          <p className="card-text">{post.description}</p>
-          {post.image && (
-            <img
-              src={post.image}
-              alt={post.title}
-              className="img-fluid mt-3"
-            />
-          )}
-        </div>
-      </div>
-      
-      <h3 className="mt-4">Posts</h3>
-      {post.posts && post.posts.length > 0 ? (
-        post.posts.map((individualPost) => (
-          <div key={individualPost.id} className="card mb-3">
-            <div className="card-body">
-              <h4 className="card-title">{individualPost.title}</h4>
-              <p className="card-text">{individualPost.content}</p>
-              {individualPost.image && (
-                <img
-                  src={individualPost.image}
-                  alt={individualPost.title}
-                  className="img-fluid"
-                />
-              )}
-            </div>
+    <Row className="h-100">
+      <Col className="py-2 p-0 p-lg-2" lg={8}>
+        <PopularProfiles mobile />
+
+        {/* Flexbox Row for sort and search controls */}
+        <div className="d-flex justify-content-between align-items-center mb-3 pr-1">
+          <div>
+            <Dropdown>
+              <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                Sort By
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setSortOrder("-created_at")}>Newest</Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortOrder("created_at")}>Oldest</Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortOrder("-total_vote_count")}>Most Upvotes</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
-        ))
-      ) : (
-        <p>No posts available for this channel.</p>
-      )}
-    </div>
+          <div className="flex-grow-1 ml-2">
+            <Form className="w-100" onSubmit={(event) => event.preventDefault()}>
+              <Form.Control
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                type="text"
+                placeholder="Search posts"
+              />
+            </Form>
+          </div>
+        </div>
+
+        {/* Content display */}
+        {hasLoaded ? (
+          <>
+            {posts.results.length ? (
+              <InfiniteScroll
+                dataLength={posts.results.length}
+                next={() => fetchMoreData(posts, setPosts)}
+                hasMore={!!posts.next}
+                loader={<Asset spinner />}
+              >
+                {posts.results.map((post) => (
+                  <Post key={post.id} {...post} setPosts={setPosts} />
+                ))}
+              </InfiniteScroll>
+            ) : (
+              <Container className={appStyles.Content}>
+                <Asset src={NoResults} message={message} />
+              </Container>
+            )}
+          </>
+        ) : (
+          <Container className={appStyles.Content}>
+            <Asset spinner />
+          </Container>
+        )}
+      </Col>
+      <Col md={4} className="d-none d-lg-block p-0 p-lg-2">
+        <PopularProfiles />
+        <PopularChannels />
+      </Col>
+    </Row>
   );
 }
 
