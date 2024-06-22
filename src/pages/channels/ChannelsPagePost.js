@@ -6,10 +6,10 @@ import { axiosReq } from "../../api/axiosDefaults";
 import Post from "../posts/Post";
 import Asset from "../../components/Asset";
 import PopularProfiles from "../profiles/PopularProfiles";
-import PopularChannels from "../channels/PopularChannels";
 import NoResults from "../../assets/no-results.png";
 import appStyles from "../../App.module.css";
 import { fetchMoreData } from "../../utils/utils";
+import TopPosters from "../../components/TopPosters";
 
 function ChannelsPagePost({ message, filter = "" }) {
   const { id } = useParams(); // Get the channel ID from the URL
@@ -108,7 +108,7 @@ function ChannelsPagePost({ message, filter = "" }) {
       </Col>
       <Col md={4} className="d-none d-lg-block p-0 p-lg-2">
         <PopularProfiles />
-        <PopularChannels />
+        <TopPosters/>
       </Col>
     </Row>
   );
