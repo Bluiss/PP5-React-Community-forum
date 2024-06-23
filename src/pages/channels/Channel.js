@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 
 const Channel = ({ channel, imageSize = 55, mobile }) => {
   const {
-    id,
+
     following_id,
     image,
     owner,
@@ -37,7 +37,7 @@ const Channel = ({ channel, imageSize = 55, mobile }) => {
             {following_id ? (
               <Button
                 variant="outline-dark"
-                onClick={() => handleUnfollow(id)}
+                onClick={() => handleUnfollow(channel)}
                 className="ml-2"
               >
                 Unfollow
@@ -45,7 +45,7 @@ const Channel = ({ channel, imageSize = 55, mobile }) => {
             ) : (
               <Button
                 variant="dark"
-                onClick={() => handleFollow(id)}
+                onClick={() => handleFollow(channel)}
                 className="ml-2"
               >
                 Follow

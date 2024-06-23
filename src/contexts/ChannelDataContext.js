@@ -1,3 +1,4 @@
+// ChannelDataContext.js
 import { createContext, useContext, useEffect, useState } from "react";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
 import { useCurrentUser } from "../contexts/CurrentUserContext";
@@ -11,7 +12,7 @@ export const useSetChannelData = () => useContext(SetChannelDataContext);
 
 export const ChannelDataProvider = ({ children }) => {
   const [channelData, setChannelData] = useState({
-    pageChannel: [], // Directly use an array
+    pageChannel: [],
     popularChannel: [],
   });
 
@@ -19,28 +20,46 @@ export const ChannelDataProvider = ({ children }) => {
 
   const handleFollow = async (clickedChannel) => {
     try {
-      const { data } = await axiosRes.post("/followers/", {
-        followed: clickedChannel.id,
-      });
+      console.log("Clicked channel object:", clickedChannel); // Debugging log
 
+      if (!clickedChannel.id) {
+        console.error("Invalid clickedChannel object:", clickedChannel);
+        return;
+      }
+
+      console.log("Attempting to follow channel with ID:", clickedChannel.id); // Debugging log
+
+      // Correctly call the backend endpoint
+      await axiosRes.post(`/channels/${clickedChannel.id}/follow/`);
+
+      // Update local state after successful follow
       setChannelData((prevState) => ({
         ...prevState,
         pageChannel: prevState.pageChannel.map((channel) =>
-          followHelper(channel, clickedChannel, data.id)
+          followHelper(channel, clickedChannel, clickedChannel.id)
         ),
         popularChannel: prevState.popularChannel.map((channel) =>
-          followHelper(channel, clickedChannel, data.id)
+          followHelper(channel, clickedChannel, clickedChannel.id)
         ),
       }));
     } catch (err) {
-      console.error(err);
+      console.error("Error in handleFollow:", err.response ? err.response.data : err);
     }
   };
 
   const handleUnfollow = async (clickedChannel) => {
     try {
-      await axiosRes.delete(`/followers/${clickedChannel.following_id}/`);
+      console.log("Attempting to unfollow channel with ID:", clickedChannel.id); // Debugging log
 
+      if (!clickedChannel.id) {
+        console.error("Invalid clickedChannel object:", clickedChannel);
+        return;
+      }
+
+      // Correctly call the backend endpoint
+      await axiosRes.post(`/channels/${clickedChannel.id}/unfollow/`);
+
+      // Update local state after successful unfollow
       setChannelData((prevState) => ({
         ...prevState,
         pageChannel: prevState.pageChannel.map((channel) =>
@@ -51,7 +70,7 @@ export const ChannelDataProvider = ({ children }) => {
         ),
       }));
     } catch (err) {
-      console.error(err);
+      console.error("Error in handleUnfollow:", err.response ? err.response.data : err);
     }
   };
 
@@ -61,11 +80,10 @@ export const ChannelDataProvider = ({ children }) => {
         const { data } = await axiosReq.get("/channels/?ordering=-followers_count");
         console.log("Fetched channels data:", data); // Debugging log
 
-        // Assuming data is directly an array of channels
         setChannelData((prevState) => ({
           ...prevState,
-          pageChannel: data, // Directly setting the array
-          popularChannel: data, // Directly setting the array
+          pageChannel: data,
+          popularChannel: data,
         }));
       } catch (err) {
         console.error("Error fetching channels data:", err);

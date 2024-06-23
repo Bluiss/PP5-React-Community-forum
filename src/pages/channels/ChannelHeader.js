@@ -19,6 +19,8 @@ const ChannelHeader = () => {
     );
   }
 
+  console.log(channel)
+
   return (
     <div className="container-fluid p-0">
       <Channel channel={channel} imageSize={100} />
