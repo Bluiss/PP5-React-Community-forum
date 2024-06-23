@@ -15,7 +15,7 @@ import ProfilePage from "./pages/profiles/ProfilePage";
 import UsernameForm from "./pages/profiles/UsernameForm";
 import UserPasswordForm from "./pages/profiles/UserPasswordForm";
 import ProfileEditForm from "./pages/profiles/ProfileEditForm";
-import ChannelsPage from "./pages/channels/ChannelsPage"
+import ChannelsPage from "./pages/channels/ChannelsPage";
 import ChannelCreateForm from "./pages/channels/ChannelCreateForm";
 
 function App() {
@@ -56,15 +56,15 @@ function App() {
             )}
           />
           <Route
-          exact
-          path="/channels"
-          render={() => (
-            <PostsPage
-              message="No results found. Adjust the search keyword or like a post."
-              filter={`likes__owner__profile=${profile_id}&ordering=-likes__created_at&`}
-            />
-          )}
-        />
+            exact
+            path="/channels/followed"
+            render={() => (
+              <ChannelsPage
+                message="No followed channels found."
+                filter="followed/"
+              />
+            )}
+          />
           <Route exact path="/" render={() => <PostsPage />} />
           <Route exact path="/signin" render={() => <SignInForm />} />
           <Route exact path="/signup" render={() => <SignUpForm />} />
@@ -72,7 +72,11 @@ function App() {
           <Route exact path="/posts/:id" render={() => <PostPage />} />
           <Route exact path="/posts/:id/edit" render={() => <PostEditForm />} />
           <Route exact path="/profiles/:id" render={() => <ProfilePage />} />
-          <Route exact path="/channel/create" render={() => <ChannelCreateForm/>} />
+          <Route
+            exact
+            path="/channel/create"
+            render={() => <ChannelCreateForm />}
+          />
           <Route exact path="/channels/:title" component={ChannelsPage} />
           <Route
             exact

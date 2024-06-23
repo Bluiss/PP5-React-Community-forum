@@ -65,7 +65,7 @@ const NavBar = () => {
       <NavLink
         className={styles.NavLink}
         activeClassName={styles.Active}
-        to="/channels"
+        to="/channels/followed"
       >
         <i className="fa-solid fa-tv"></i>
       </NavLink>
