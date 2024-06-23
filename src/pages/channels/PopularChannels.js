@@ -6,10 +6,7 @@ import Channel from "./Channel";
 import Asset from "../../components/Asset";
 
 const PopularChannels = ({ mobile }) => {
-  const { popularChannel } = useChannelData(); 
-
-
-  const hasChannels = popularChannel && popularChannel.results && popularChannel.results.length > 0;
+  const { popularChannel } = useChannelData(); // Assuming popularChannel contains the results
 
   return (
     <Container
@@ -17,7 +14,7 @@ const PopularChannels = ({ mobile }) => {
         mobile && "d-lg-none text-center mb-3"
       }`}
     >
-      {hasChannels ? (
+      {popularChannel.results && popularChannel.results.length > 0 ? (
         <>
           <p>Most followed channels</p>
           {mobile ? (
@@ -36,7 +33,6 @@ const PopularChannels = ({ mobile }) => {
         <Asset spinner />
       )}
     </Container>
-    
   );
 }
 

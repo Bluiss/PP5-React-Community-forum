@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Switch, useParams, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, useParams } from "react-router-dom";
 import axios from "axios"; 
 
 const TitleComponent = () => {
-  const { title } = useParams(); // Get the 'title' parameter from the URL
-  const location = useLocation();
-  const [pageTitle, setPageTitle] = useState("Loading..."); // Rename to avoid conflict
+  const { title } = useParams(); // Extract the title from the URL
+  const [pageTitle, setPageTitle] = useState("Loading...");
 
   useEffect(() => {
     const fetchTitle = async () => {
-      if (location.pathname === "/") {
+      if (!title) {
+        // If no title is provided, default to "Threadly"
         setPageTitle("Threadly");
-      } else if (title) { // Correctly check for 'title'
-        try {
-          const { data } = await axios.get(`/channels/title/${title}`); // Correct URL
-          const channelTitle = data?.title || "Default Title";
-          setPageTitle(channelTitle);
-        } catch (error) {
-          console.error("Error fetching channel title:", error);
-          setPageTitle("Error fetching title");
-        }
+        return;
+      }
+
+      try {
+        // Fetch channel details using the title
+        const { data } = await axios.get(`/channels/title/${title}`);
+        const channelTitle = data?.title || "Default Title";
+        setPageTitle(channelTitle);
+        document.title = channelTitle; // Update the document title
+      } catch (error) {
+        console.error("Error fetching channel title:", error);
+        setPageTitle("Error fetching title");
+        document.title = "Error fetching title"; // Update document title on error
       }
     };
 
     fetchTitle();
-  }, [title, location.pathname]); // Update dependencies
+  }, [title]); // Only depend on 'title' to trigger the effect
 
-  return <h1 className={pageTitle}>{pageTitle}</h1>; // Use 'pageTitle' for the content
+  return <h1>{pageTitle}</h1>;
 };
 
 const App = () => {
@@ -34,7 +38,7 @@ const App = () => {
     <Router>
       <Switch>
         <Route exact path="/" component={TitleComponent} />
-        <Route exact path="/channels/:title" component={TitleComponent} /> {/* Use 'title' for the dynamic part */}
+        <Route exact path="/channels/:title" component={TitleComponent} />
       </Switch>
     </Router>
   );

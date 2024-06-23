@@ -25,9 +25,7 @@ function ChannelsPagePost({ message }) {
         try {
           // Update the URL to use channel__title
           const url = `/posts/?channel__title=${title}&ordering=${sortOrder}`;
-          console.log(`Constructed URL for posts: ${url}`); 
           const response = await axiosReq.get(url);
-          console.log('Posts API Response:', response);  // Log the entire response
           setPosts(response.data);
           setHasLoaded(true);
         } catch (err) {
@@ -47,6 +45,7 @@ function ChannelsPagePost({ message }) {
       console.error("Channel title is undefined, skipping fetchPosts");
     }
   }, [query, pathname, sortOrder, title]);
+  
 
   return (
     <Row className="h-100">

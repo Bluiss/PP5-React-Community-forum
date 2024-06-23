@@ -14,9 +14,7 @@ function ChannelsPage() {
       try {
         if (title) {
           const url = `/channels/title/${title}`;
-          console.log(`Constructed URL for channel: ${url}`); 
           const response = await axiosReq.get(url);
-          console.log('Channel API Response:', response);  // Log the entire response
           setChannel(response.data);
         } else {
           console.error("Channel title is missing");

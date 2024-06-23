@@ -3,19 +3,17 @@ import { Link } from "react-router-dom";
 import { Card, Button, OverlayTrigger, Tooltip, Row, Col } from "react-bootstrap";
 import Avatar from "../../components/Avatar";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import { useSetChannelData } from "../../contexts/ChannelDataContext"; // Assuming this provides setChannelData
-import { axiosRes } from "../../api/axiosDefaults"; // Ensure axiosRes is imported for API calls
+import { useSetChannelData } from "../../contexts/ChannelDataContext"; 
+import { axiosRes } from "../../api/axiosDefaults";
 import styles from "../../styles/Channel.module.css";
 import btnStyles from "../../styles/Button.module.css";
 
-const Channel = (props) => {
-  const { channel, imageSize = 55 } = props;
-  const { id, following_id, image, owner, title, updated_at, likes_count, comments_count, like_id , profile_id} = channel;
+const Channel = ({ channel, imageSize = 55, mobile }) => {
+  const { id, following_id, image, owner, title, updated_at, likes_count, comments_count, like_id, profile_id } = channel;
 
   const currentUser = useCurrentUser();
   const is_owner = currentUser?.username === owner;
 
-  // Using setChannelData from the context
   const { setChannelData, handleFollow, handleUnfollow } = useSetChannelData();
 
   const handleLike = async () => {
@@ -31,6 +29,7 @@ const Channel = (props) => {
       }));
     } catch (err) {
       console.log(err);
+      // Optionally show a notification to the user
     }
   };
 
@@ -47,6 +46,7 @@ const Channel = (props) => {
       }));
     } catch (err) {
       console.log(err);
+      // Optionally show a notification to the user
     }
   };
 
@@ -67,7 +67,7 @@ const Channel = (props) => {
         </Row>
         <Row className="align-items-center justify-content-between mb-3">
           <Col xs="auto" className="text-center">
-            <span>{updated_at}</span>
+            <span>{new Date(updated_at).toLocaleDateString()}</span> {/* Display date in a readable format */}
           </Col>
         </Row>
         <div className="d-flex justify-content-center mt-2">
@@ -80,11 +80,11 @@ const Channel = (props) => {
                 <i className="far fa-heart" />
               </OverlayTrigger>
             ) : like_id ? (
-              <span onClick={handleUnlike} className="cursor-pointer">
+              <span onClick={handleUnlike} className="cursor-pointer" aria-label="Unlike this channel">
                 <i className={`fas fa-heart ${styles.Heart}`} />
               </span>
             ) : currentUser ? (
-              <span onClick={handleLike} className="cursor-pointer">
+              <span onClick={handleLike} className="cursor-pointer" aria-label="Like this channel">
                 <i className={`far fa-heart ${styles.HeartOutline}`} />
               </span>
             ) : (
@@ -98,7 +98,7 @@ const Channel = (props) => {
             <span className="ml-2">{likes_count}</span>
           </div>
           <div className="d-flex align-items-center">
-            <Link to={`/channels/${id}`} className="d-flex align-items-center">
+            <Link to={`/channels/${id}`} className="d-flex align-items-center" aria-label="View comments on this channel">
               <i className="far fa-comments" />
               <span className="ml-2">{comments_count}</span>
             </Link>
@@ -110,6 +110,7 @@ const Channel = (props) => {
               <Button
                 className={`${btnStyles.Button} ${btnStyles.BlackOutline}`}
                 onClick={() => handleUnfollow(channel)}
+                aria-label="Unfollow this channel"
               >
                 Unfollow
               </Button>
@@ -117,6 +118,7 @@ const Channel = (props) => {
               <Button
                 className={`${btnStyles.Button} ${btnStyles.Black}`}
                 onClick={() => handleFollow(channel)}
+                aria-label="Follow this channel"
               >
                 Follow
               </Button>
