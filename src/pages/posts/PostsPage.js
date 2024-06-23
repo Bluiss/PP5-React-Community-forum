@@ -16,7 +16,7 @@ function PostsPage({ message, filter = "" }) {
   const [hasLoaded, setHasLoaded] = useState(false);
   const { pathname } = useLocation();
   const [query, setQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("-created_at"); // Default to newest
+  const [sortOrder, setSortOrder] = useState("-created_at"); 
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -44,7 +44,6 @@ function PostsPage({ message, filter = "" }) {
       <Col className="py-2 p-0 p-lg-2" lg={8}>
         <PopularProfiles mobile />
 
-        {/* Flexbox Row for sort and search controls */}
         <div className="d-flex justify-content-between align-items-center mb-3 pr-1">
           <div>
             <Dropdown>

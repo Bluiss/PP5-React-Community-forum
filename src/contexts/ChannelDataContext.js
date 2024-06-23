@@ -1,4 +1,3 @@
-// src/contexts/ChannelDataContext.js
 import { createContext, useContext, useEffect, useState } from "react";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
 import { useCurrentUser } from "../contexts/CurrentUserContext";
@@ -11,10 +10,9 @@ export const useChannelData = () => useContext(ChannelDataContext);
 export const useSetChannelData = () => useContext(SetChannelDataContext);
 
 export const ChannelDataProvider = ({ children }) => {
-
   const [channelData, setChannelData] = useState({
-    pageChannel: { results: [] },
-    popularChannel: { results: [] },
+    pageChannel: [], // Directly use an array
+    popularChannel: [],
   });
 
   const currentUser = useCurrentUser();
@@ -27,16 +25,12 @@ export const ChannelDataProvider = ({ children }) => {
 
       setChannelData((prevState) => ({
         ...prevState,
-        pageChannel: {
-          results: prevState.pageChannel.results.map((channel) =>
-            followHelper(channel, clickedChannel, data.id)
-          ),
-        },
-        popularChannel: {
-          results: prevState.popularChannel.results.map((channel) =>
-            followHelper(channel, clickedChannel, data.id)
-          ),
-        },
+        pageChannel: prevState.pageChannel.map((channel) =>
+          followHelper(channel, clickedChannel, data.id)
+        ),
+        popularChannel: prevState.popularChannel.map((channel) =>
+          followHelper(channel, clickedChannel, data.id)
+        ),
       }));
     } catch (err) {
       console.error(err);
@@ -49,16 +43,12 @@ export const ChannelDataProvider = ({ children }) => {
 
       setChannelData((prevState) => ({
         ...prevState,
-        pageChannel: {
-          results: prevState.pageChannel.results.map((channel) =>
-            unfollowHelper(channel, clickedChannel)
-          ),
-        },
-        popularChannel: {
-          results: prevState.popularChannel.results.map((channel) =>
-            unfollowHelper(channel, clickedChannel)
-          ),
-        },
+        pageChannel: prevState.pageChannel.map((channel) =>
+          unfollowHelper(channel, clickedChannel)
+        ),
+        popularChannel: prevState.popularChannel.map((channel) =>
+          unfollowHelper(channel, clickedChannel)
+        ),
       }));
     } catch (err) {
       console.error(err);
@@ -68,15 +58,17 @@ export const ChannelDataProvider = ({ children }) => {
   useEffect(() => {
     const handleMount = async () => {
       try {
-        const { data } = await axiosReq.get(
-          "/channels/?ordering=-followers_count"
-        );
+        const { data } = await axiosReq.get("/channels/?ordering=-followers_count");
+        console.log("Fetched channels data:", data); // Debugging log
+
+        // Assuming data is directly an array of channels
         setChannelData((prevState) => ({
           ...prevState,
-          popularChannel: data,
+          pageChannel: data, // Directly setting the array
+          popularChannel: data, // Directly setting the array
         }));
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching channels data:", err);
       }
     };
 
