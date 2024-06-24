@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useChannelData } from '../../contexts/ChannelDataContext';
 import Channel from './Channel';
 import Typography from '@mui/material/Typography';
+import { ChannelEditDropdown } from '../../components/MoreDropdown'; // Correctly import as named export
 
 const ChannelHeader = () => {
   const { title } = useParams();
@@ -19,11 +20,13 @@ const ChannelHeader = () => {
     );
   }
 
-  console.log(channel)
 
   return (
     <div className="container-fluid p-0">
-      <Channel channel={channel} imageSize={100} />
+      <div className="d-flex justify-content-between align-items-center">
+        <Channel channel={channel} imageSize={100} />
+        {channel?.is_owner && <ChannelEditDropdown title={channel?.title} />}
+      </div>
     </div>
   );
 };

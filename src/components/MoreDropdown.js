@@ -74,3 +74,20 @@ export const ProfileEditDropdown = ({ id }) => {
     </Dropdown>
   );
 };
+
+export const ChannelEditDropdown = ({ title }) => {
+  const history = useHistory();
+  return (
+    <Dropdown className={`ml-auto px-3 ${styles.Absolute}`} drop="left">
+      <Dropdown.Toggle as={ThreeDots} />
+      <Dropdown.Menu>
+        <Dropdown.Item
+          onClick={() => history.push(`/channel/${title}/edit`)}
+          aria-label="edit-channel"
+        >
+          <i className="fas fa-edit" /> edit channel
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
