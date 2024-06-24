@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Container, Nav, Dropdown, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { Navbar, Container, Nav, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import logo from "../assets/logo.png";
 import styles from "../styles/NavBar.module.css";
 import { NavLink } from "react-router-dom";
@@ -62,27 +62,27 @@ const NavBar = () => {
       </OverlayTrigger>
       <OverlayTrigger
         placement="bottom"
-        overlay={<Tooltip id="feed-tooltip">Your Likes</Tooltip>}
+        overlay={<Tooltip id="likes-tooltip">Your Likes</Tooltip>}
       >
-      <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to="/liked"
-      >
-        <i className="fas fa-heart"></i>
-      </NavLink>
+        <NavLink
+          className={styles.NavLink}
+          activeClassName={styles.Active}
+          to="/liked"
+        >
+          <i className="fas fa-heart"></i>
+        </NavLink>
       </OverlayTrigger>
       <OverlayTrigger
         placement="bottom"
-        overlay={<Tooltip id="feed-tooltip">Channels You Follow</Tooltip>}
+        overlay={<Tooltip id="channels-tooltip">Channels You Follow</Tooltip>}
       >
-      <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to="/channels/followed"
-      >
-        <i className="fa-solid fa-tv"></i>
-      </NavLink>
+        <NavLink
+          className={styles.NavLink}
+          activeClassName={styles.Active}
+          to="/channels/followed"
+        >
+          <i className="fa-solid fa-tv"></i>
+        </NavLink>
       </OverlayTrigger>
       <NavLink className={styles.NavLink} to="/" onClick={handleSignOut}>
         <i className="fas fa-sign-out-alt"></i>

@@ -6,7 +6,8 @@ import Channel from "./Channel";
 import Asset from "../../components/Asset";
 
 const PopularChannels = ({ mobile }) => {
-  const { popularChannel } = useChannelData(); // Assuming popularChannel contains the results
+  const { popularChannel } = useChannelData(); // Assuming popularChannel is an array
+
 
   return (
     <Container
@@ -14,17 +15,17 @@ const PopularChannels = ({ mobile }) => {
         mobile && "d-lg-none text-center mb-3"
       }`}
     >
-      {popularChannel.results && popularChannel.results.length > 0 ? (
+      {popularChannel.length > 0 ? (
         <>
           <p>Most followed channels</p>
           {mobile ? (
             <div className="d-flex justify-content-around">
-              {popularChannel.results.slice(0, 4).map((channel) => (
-                <Channel key={channel.id} channel={channel} mobile />
+              {popularChannel.slice(0, 4).map((channel) => (
+                <Channel className="d-flex justify-content-around" key={channel.id} channel={channel} mobile />
               ))}
             </div>
           ) : (
-            popularChannel.results.map((channel) => (
+            popularChannel.map((channel) => (
               <Channel key={channel.id} channel={channel} />
             ))
           )}

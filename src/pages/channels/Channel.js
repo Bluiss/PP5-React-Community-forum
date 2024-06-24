@@ -6,7 +6,6 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
 const Channel = ({ channel, imageSize = 55, mobile }) => {
-  console.log("Channel component received data:", channel);
 
   const {
     following_id = null,

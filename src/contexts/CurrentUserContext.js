@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
 import { useHistory } from "react-router-dom";
@@ -26,11 +26,12 @@ export const CurrentUserProvider = ({ children }) => {
     handleMount();
   }, []);
 
-  useMemo(() => {
-    axiosReq.interceptors.request.use(
+  useEffect(() => {
+    const requestInterceptor = axiosReq.interceptors.request.use(
       async (config) => {
         try {
-          await axios.post("/dj-rest-auth/token/refresh/");
+          const { data } = await axios.post("/dj-rest-auth/token/refresh/");
+          config.headers.Authorization = `Bearer ${data.access}`;
         } catch (err) {
           setCurrentUser((prevCurrentUser) => {
             if (prevCurrentUser) {
@@ -38,7 +39,6 @@ export const CurrentUserProvider = ({ children }) => {
             }
             return null;
           });
-          return config;
         }
         return config;
       },
@@ -47,12 +47,14 @@ export const CurrentUserProvider = ({ children }) => {
       }
     );
 
-    axiosRes.interceptors.response.use(
+    const responseInterceptor = axiosRes.interceptors.response.use(
       (response) => response,
       async (err) => {
         if (err.response?.status === 401) {
           try {
-            await axios.post("/dj-rest-auth/token/refresh/");
+            const { data } = await axios.post("/dj-rest-auth/token/refresh/");
+            err.config.headers.Authorization = `Bearer ${data.access}`;
+            return axios(err.config);
           } catch (err) {
             setCurrentUser((prevCurrentUser) => {
               if (prevCurrentUser) {
@@ -61,12 +63,16 @@ export const CurrentUserProvider = ({ children }) => {
               return null;
             });
           }
-          return axios(err.config);
         }
         return Promise.reject(err);
       }
     );
-  }, [history]);
+
+    return () => {
+      axiosReq.interceptors.request.eject(requestInterceptor);
+      axiosRes.interceptors.response.eject(responseInterceptor);
+    };
+  }, [history, setCurrentUser]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

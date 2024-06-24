@@ -18,9 +18,7 @@ function ChannelsPage() {
     const fetchChannelData = async () => {
       try {
         if (title) {
-          console.log("Fetching single channel by title:", title);
           const response = await axiosReq.get(`/channels/title/${title}/`);
-          console.log("Single channel response:", response.data);
           if (isMounted) {
             setChannel(response.data);
           }

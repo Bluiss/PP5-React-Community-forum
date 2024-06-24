@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Media } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import { MoreDropdown } from "../../components/MoreDropdown";
@@ -47,33 +47,43 @@ const Comment = (props) => {
   return (
     <>
       <hr />
-      <Media>
-        <Link to={`/profiles/${profile_id}`}>
-          <Avatar src={profile_image} />
-        </Link>
-        <Media.Body className="align-self-center ml-2">
-          <span className={styles.Owner}>{owner}</span>
-          <span className={styles.Date}>{updated_at}</span>
-          {showEditForm ? (
-            <CommentEditForm
-              id={id}
-              profile_id={profile_id}
-              content={content}
-              profileImage={profile_image}
-              setComments={setComments}
-              setShowEditForm={setShowEditForm}
-            />
-          ) : (
-            <p>{content}</p>
-          )}
-        </Media.Body>
-        {is_owner && !showEditForm && (
-          <MoreDropdown
-            handleEdit={() => setShowEditForm(true)}
-            handleDelete={handleDelete}
-          />
-        )}
-      </Media>
+      <Card className="mb-3">
+        <Card.Body>
+          <Row>
+            <Col xs={2}>
+              <Link to={`/profiles/${profile_id}`}>
+                <Avatar src={profile_image} />
+              </Link>
+            </Col>
+            <Col xs={10}>
+              <div className="d-flex justify-content-between">
+                <div>
+                  <span className={styles.Owner}>{owner}</span>
+                  <span className={styles.Date}>{updated_at}</span>
+                </div>
+                {is_owner && !showEditForm && (
+                  <MoreDropdown
+                    handleEdit={() => setShowEditForm(true)}
+                    handleDelete={handleDelete}
+                  />
+                )}
+              </div>
+              {showEditForm ? (
+                <CommentEditForm
+                  id={id}
+                  profile_id={profile_id}
+                  content={content}
+                  profileImage={profile_image}
+                  setComments={setComments}
+                  setShowEditForm={setShowEditForm}
+                />
+              ) : (
+                <p>{content}</p>
+              )}
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
     </>
   );
 };
