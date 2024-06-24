@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Container, Nav, Dropdown } from "react-bootstrap";
+import { Navbar, Container, Nav, Dropdown, Tooltip, OverlayTrigger } from "react-bootstrap";
 import logo from "../assets/logo.png";
 import styles from "../styles/NavBar.module.css";
 import { NavLink } from "react-router-dom";
@@ -48,20 +48,34 @@ const NavBar = () => {
 
   const loggedInIcons = (
     <>
-      <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to="/feed"
+      <OverlayTrigger
+        placement="bottom"
+        overlay={<Tooltip id="feed-tooltip">Profiles you follow</Tooltip>}
       >
-        <i className="fas fa-stream"></i>
-      </NavLink>
+        <NavLink
+          className={styles.NavLink}
+          activeClassName={styles.Active}
+          to="/feed"
+        >
+          <i className="fas fa-stream"></i>
+        </NavLink>
+      </OverlayTrigger>
+      <OverlayTrigger
+        placement="bottom"
+        overlay={<Tooltip id="feed-tooltip">Your Likes</Tooltip>}
+      >
       <NavLink
         className={styles.NavLink}
         activeClassName={styles.Active}
         to="/liked"
       >
         <i className="fas fa-heart"></i>
-      </NavLink>      
+      </NavLink>
+      </OverlayTrigger>
+      <OverlayTrigger
+        placement="bottom"
+        overlay={<Tooltip id="feed-tooltip">Channels You Follow</Tooltip>}
+      >
       <NavLink
         className={styles.NavLink}
         activeClassName={styles.Active}
@@ -69,6 +83,7 @@ const NavBar = () => {
       >
         <i className="fa-solid fa-tv"></i>
       </NavLink>
+      </OverlayTrigger>
       <NavLink className={styles.NavLink} to="/" onClick={handleSignOut}>
         <i className="fas fa-sign-out-alt"></i>
       </NavLink>
@@ -124,12 +139,8 @@ const NavBar = () => {
               </Dropdown.Toggle>
 
               <Dropdown.Menu className={styles.CustomDropdownMenu}>
-                <Dropdown.Item as="div">
-                  {addPostIcon}
-                </Dropdown.Item>
-                <Dropdown.Item as="div">
-                  {addChannelIcon}
-                </Dropdown.Item>
+                <Dropdown.Item as="div">{addPostIcon}</Dropdown.Item>
+                <Dropdown.Item as="div">{addChannelIcon}</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           )}

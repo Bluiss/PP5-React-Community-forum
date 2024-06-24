@@ -50,8 +50,6 @@ function ChannelsPage() {
     return <div>Error: {error.message}</div>;
   }
 
-  console.log("Rendered channels:", channels);
-  console.log("Rendered channel:", channel);
 
   return (
     <Row className="h-100">
