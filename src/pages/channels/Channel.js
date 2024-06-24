@@ -1,13 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import { useSetChannelData } from "../../contexts/ChannelDataContext";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
 const Channel = ({ channel, imageSize = 55, mobile }) => {
-  const {
+  console.log("Channel component received data:", channel);
 
-    following_id,
+  const {
+    following_id = null,
     image,
     owner,
     title,
@@ -21,17 +23,21 @@ const Channel = ({ channel, imageSize = 55, mobile }) => {
   const { handleFollow, handleUnfollow } = useSetChannelData();
 
   return (
-    <Card className="mb-3  ">
-      <Card.Img variant="top" src={image} alt="channel image" height="auto"/>
-      <Card.Body className="text-align-center" >
-        <Card.Title>{title}</Card.Title>
+    <Card className="mb-3">
+      <Link to={`/channels/${title}`}>
+        <Card.Img variant="top" src={image} alt="channel image" height="auto" />
+      </Link>
+      <Card.Body className="text-align-center">
+        <Card.Title>
+          <Link to={`/channels/${title}`}>{title}</Link>
+        </Card.Title>
         <Card.Text>
           {description}
           <br />
         </Card.Text>
       </Card.Body>
       <Card.Footer className="d-flex justify-content-between">
-      <span className="text-muted">Followers: {followers_count}</span>
+        <span className="text-muted">Followers: {followers_count}</span>
         {!mobile && currentUser && !is_owner && (
           <>
             {following_id ? (

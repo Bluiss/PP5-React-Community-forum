@@ -4,6 +4,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import ChannelsPagePost from "./ChannelsPagePost";
 import Channel from "./Channel";
+import Asset from "../../components/Asset";
 
 function ChannelsPage() {
   const { title } = useParams();
@@ -13,36 +14,44 @@ function ChannelsPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true; // Track whether the component is mounted
     const fetchChannelData = async () => {
       try {
         if (title) {
-          // Fetch a single channel by title
-          const response = await axiosReq.get(`/channels/title/${title}`);
-          setChannel(response.data);
+          console.log("Fetching single channel by title:", title);
+          const response = await axiosReq.get(`/channels/title/${title}/`);
+          console.log("Single channel response:", response.data);
+          if (isMounted) {
+            setChannel(response.data);
+          }
         } else if (location.pathname === "/channels/followed") {
-          // Fetch followed channels
+          console.log("Fetching followed channels");
           const response = await axiosReq.get("/channels/followed/");
-          setChannels(response.data);
-        } else {
-          console.error("No valid endpoint to fetch");
+          console.log("Followed channels response:", response.data);
+          if (isMounted) {
+            setChannels(response.data.results);
+          }
         }
       } catch (err) {
-        if (err.response && err.response.status === 404) {
-          console.error("Channel not found:", err);
-          setError(new Error("Channel not found"));
-        } else {
-          console.error("Error fetching channel data:", err);
-          setError(err);
-        }
+        console.error("Error fetching channel data:", err);
+        setError(err);
       }
     };
 
     fetchChannelData();
+
+    return () => {
+      isMounted = false; 
+    };
   }, [title, location.pathname]);
 
   if (error) {
+    console.log("Error state:", error);
     return <div>Error: {error.message}</div>;
   }
+
+  console.log("Rendered channels:", channels);
+  console.log("Rendered channel:", channel);
 
   return (
     <Row className="h-100">
@@ -50,10 +59,10 @@ function ChannelsPage() {
         <ChannelsPagePost channel={channel} message="No posts found for this channel." />
       ) : channels.length > 0 ? (
         channels.map((chan) => (
-          <Channel key={chan.id} {...chan} />
+          <Channel key={chan.id} channel={chan} />
         ))
       ) : (
-        <div>Loading...</div>
+        <Asset/>
       )}
     </Row>
   );
