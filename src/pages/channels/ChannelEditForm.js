@@ -12,7 +12,7 @@ import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
 
 const ChannelEditForm = () => {
-  const { title } = useParams(); // Get the channel title from the URL
+  const { title } = useParams();
   const history = useHistory();
   const imageFile = useRef();
 
@@ -21,17 +21,16 @@ const ChannelEditForm = () => {
     description: "",
     image: "",
   });
-  const { name, description, image } = channelData;
 
+  const { name, description, image } = channelData;
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchChannelData = async () => {
       try {
-        // Fetch the channel by title from the URL
-        const { data } = await axiosReq.get(`/channels/?title=${title}`);
-        if (data.results.length > 0) {
-          const channel = data.results[0];
+        const response = await axiosReq.get(`/channels/title/${encodeURIComponent(title)}/`);
+        const channel = response.data;
+        if (channel) {
           setChannelData({
             name: channel.name,
             description: channel.description,
@@ -41,7 +40,7 @@ const ChannelEditForm = () => {
           history.push("/not-found");
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
         history.push("/");
       }
     };
@@ -59,65 +58,41 @@ const ChannelEditForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("name", name);
+    formData.append("title", title);
     formData.append("description", description);
-
-    if (imageFile?.current?.files[0]) {
-      formData.append("image", imageFile?.current?.files[0]);
+    if (imageFile.current?.files[0]) {
+      formData.append("image", imageFile.current.files[0]);
     }
 
     try {
-      // Update the channel using the title
-      await axiosReq.put(`/channels/${title}/`, formData);
+      await axiosReq.put(`/channels/title/${encodeURIComponent(title)}/`, formData);
       history.goBack();
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setErrors(err.response?.data);
     }
   };
 
-  const textFields = (
-    <>
-      <Form.Group>
-        <Form.Label>Name</Form.Label>
-        <Form.Control
-          type="text"
-          value={name}
-          onChange={handleChange}
-          name="name"
-        />
-      </Form.Group>
-      {errors?.name?.map((message, idx) => (
-        <Alert variant="warning" key={idx}>
-          {message}
-        </Alert>
-      ))}
-      <Form.Group>
-        <Form.Label>Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          value={description}
-          onChange={handleChange}
-          name="description"
-          rows={5}
-        />
-      </Form.Group>
-      {errors?.description?.map((message, idx) => (
-        <Alert variant="warning" key={idx}>
-          {message}
-        </Alert>
-      ))}
-      <Button
-        className={`${btnStyles.Button} ${btnStyles.Blue}`}
-        onClick={() => history.goBack()}
-      >
-        Cancel
-      </Button>
-      <Button className={`${btnStyles.Button} ${btnStyles.Blue}`} type="submit">
-        Save
-      </Button>
-    </>
-  );
+  const ChannelTextFields = ({ name, description, handleChange, errors }) => (
+  <>
+    <Form.Group>
+      <Form.Label>Title</Form.Label>
+      <Form.Control type="text" value={title} onChange={handleChange} name="title" />
+      {errors?.name?.map((message, idx) => <Alert variant="warning" key={idx}>{message}</Alert>)}
+    </Form.Group>
+    <Form.Group>
+      <Form.Label>Description</Form.Label>
+      <Form.Control as="textarea" value={description} onChange={handleChange} name="description" rows={5} />
+      {errors?.description?.map((message, idx) => <Alert variant="warning" key={idx}>{message}</Alert>)}
+    </Form.Group>
+    <Button className={`${btnStyles.Button} ${btnStyles.Blue}`} onClick={() => history.goBack()}>
+      Cancel
+    </Button>
+    <Button className={`${btnStyles.Button} ${btnStyles.Blue}`} type="submit">
+      Save
+    </Button>
+  </>
+);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -130,42 +105,41 @@ const ChannelEditForm = () => {
                   <Image src={image} fluid />
                 </figure>
               )}
-              {errors?.image?.map((message, idx) => (
-                <Alert variant="warning" key={idx}>
-                  {message}
-                </Alert>
-              ))}
               <div>
-                <Form.Label
-                  className={`${btnStyles.Button} ${btnStyles.Blue} btn my-auto`}
-                  htmlFor="image-upload"
-                >
+                <Form.Label className={`${btnStyles.Button} ${btnStyles.Blue} btn my-auto`} htmlFor="image-upload">
                   Change the image
                 </Form.Label>
+                <Form.Control
+                  id="image-upload"
+                  type="file"
+                  ref={imageFile}
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files[0]) {
+                      setChannelData({
+                        ...channelData,
+                        image: URL.createObjectURL(e.target.files[0]),
+                      });
+                    }
+                  }}
+                />
               </div>
-              <Form.File
-                id="image-upload"
-                ref={imageFile}
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files.length) {
-                    setChannelData({
-                      ...channelData,
-                      image: URL.createObjectURL(e.target.files[0]),
-                    });
-                  }
-                }}
-              />
             </Form.Group>
-            <div className="d-md-none">{textFields}</div>
+            <div className="d-md-none">
+              <ChannelTextFields {...{name, description, handleChange, errors}} />
+            </div>
           </Container>
         </Col>
         <Col md={5} lg={6} className="d-none d-md-block p-0 p-md-2 text-center">
-          <Container className={appStyles.Content}>{textFields}</Container>
+          <Container className={appStyles.Content}>
+            <ChannelTextFields {...{name, description, handleChange, errors}} />
+          </Container>
         </Col>
       </Row>
     </Form>
   );
 };
+
+
 
 export default ChannelEditForm;

@@ -1,6 +1,5 @@
 import styles from "./App.module.css";
 import NavBar from "./components/NavBar";
-import SearchBar from "./components/SearchBar";
 import Container from "react-bootstrap/Container";
 import { Route, Switch } from "react-router-dom";
 import "./api/axiosDefaults";
@@ -17,6 +16,7 @@ import UserPasswordForm from "./pages/profiles/UserPasswordForm";
 import ProfileEditForm from "./pages/profiles/ProfileEditForm";
 import ChannelsPage from "./pages/channels/ChannelsPage";
 import ChannelCreateForm from "./pages/channels/ChannelCreateForm";
+import ChannelEditForm from "./pages/channels/ChannelEditForm";
 
 function App() {
   const currentUser = useCurrentUser();
@@ -25,7 +25,6 @@ function App() {
   return (
     <div className={styles.App}>
       <NavBar />
-      <SearchBar />
       <Container className={styles.Main}>
         <Switch>
           <Route
@@ -93,6 +92,13 @@ function App() {
             path="/profiles/:id/edit"
             render={() => <ProfileEditForm />}
           />
+          <Route
+            exact
+            path="/channels/:title/edit"
+            render={({ match }) => (
+              <ChannelEditForm title={match.params.title} />
+            )}
+          ></Route>
           <Route render={() => <p>Page not found!</p>} />
         </Switch>
       </Container>

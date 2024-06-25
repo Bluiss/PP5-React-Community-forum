@@ -17,3 +17,9 @@
     color: inherit;
   }
   
+.NavBar .brand-title {
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 100px !important;
+}
+
+  

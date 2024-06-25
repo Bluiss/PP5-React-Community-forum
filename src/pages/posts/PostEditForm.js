@@ -182,8 +182,9 @@ function PostEditForm() {
                 </Form.Label>
               </div>
 
-              <Form.File
+              <Form.Control
                 id="image-upload"
+                type="file"
                 accept="image/*"
                 onChange={handleChangeImage}
                 ref={imageInput}

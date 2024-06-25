@@ -32,7 +32,7 @@ const ChannelHeader = () => {
   const handleDelete = async () => {
     try {
       await axiosReq.delete(`/channels/title/${title}/`);
-      history.push('/'); // Navigate to home or another appropriate page
+      history.push('/'); 
     } catch (err) {
       console.error("Failed to delete the channel:", err);
     }
@@ -49,9 +49,6 @@ const ChannelHeader = () => {
           <MoreDropdown handleEdit={handleEdit} handleDelete={handleDelete} />
         )}
         {channel && <Channel channel={channel} imageSize={100} />}
-        {channel && channel.is_owner && (
-          <MoreDropdown handleEdit={handleEdit} handleDelete={handleDelete} />
-        )}
       </div>
     </div>
   );

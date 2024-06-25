@@ -121,8 +121,8 @@ const NavBar = () => {
         expanded={expanded}
         className={styles.NavBar}
         expand="md"
-        fixed="top"
-      >
+
+>
         <Container>
           <NavLink to="/">
             <Navbar.Brand>
