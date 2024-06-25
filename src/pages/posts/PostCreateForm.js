@@ -7,13 +7,12 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 import Image from "react-bootstrap/Image";
-import Asset from "../../components/Asset"; 
-import Upload from "../../assets/upload.png"; 
-import styles from "../../styles/PostCreateEditForm.module.css"; 
-import appStyles from "../../App.module.css"; 
+import Asset from "../../components/Asset";
+import Upload from "../../assets/upload.png";
+import styles from "../../styles/PostCreateEditForm.module.css";
+import appStyles from "../../App.module.css";
 import btnStyles from "../../styles/Button.module.css";
-import { axiosReq } from "../../api/axiosDefaults"; 
-
+import { axiosReq } from "../../api/axiosDefaults";
 
 function PostCreateForm() {
   const [errors, setErrors] = useState({});
@@ -32,7 +31,9 @@ function PostCreateForm() {
     // Fetch channels when the component mounts
     const fetchChannels = async () => {
       try {
-        const response = await axiosReq.get("https://pp5-api-community-forum-77bcfdc8891c.herokuapp.com/channels/");
+        const response = await axiosReq.get(
+          "https://pp5-api-community-forum-77bcfdc8891c.herokuapp.com/channels/"
+        );
         setChannels(response.data);
       } catch (error) {
         console.error("Error fetching channels:", error);
@@ -71,7 +72,7 @@ function PostCreateForm() {
     }
 
     for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
+      console.log(pair[0] + ": " + pair[1]);
     }
 
     try {
@@ -82,9 +83,9 @@ function PostCreateForm() {
       });
       history.push(`/posts/${data.id}`);
     } catch (err) {
-      console.error('Error creating post:', err.response || err.message);
+      console.error("Error creating post:", err.response || err.message);
       if (err.response) {
-        console.error('Server response:', err.response.data);
+        console.error("Server response:", err.response.data);
       }
       if (err.response?.status !== 401) {
         setErrors(err.response?.data);
@@ -193,7 +194,8 @@ function PostCreateForm() {
                 </Form.Label>
               )}
 
-              <Form.File
+              <Form.Control
+                type="file"
                 id="image-upload"
                 accept="image/*"
                 onChange={handleChangeImage}

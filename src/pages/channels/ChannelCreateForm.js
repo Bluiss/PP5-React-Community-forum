@@ -16,7 +16,7 @@ import { axiosReq } from "../../api/axiosDefaults";
 import { useRedirect } from "../../hooks/useRedirect";
 
 function ChannelCreateForm() {
-  useRedirect('loggedOut');
+  useRedirect("loggedOut");
   const [errors, setErrors] = useState({});
   const [channelData, setChannelData] = useState({
     title: "",
@@ -59,11 +59,11 @@ function ChannelCreateForm() {
           "Content-Type": "multipart/form-data",
         },
       });
-      history.push(`/channels/${data.id}`);
+      history.push(`/channels/${data.title}`);
     } catch (err) {
-      console.error('Error creating channel:', err.response || err.message);
+      console.error("Error creating channel:", err.response || err.message);
       if (err.response) {
-        console.error('Server response:', err.response.data);
+        console.error("Server response:", err.response.data);
       }
       if (err.response?.status !== 401) {
         setErrors(err.response?.data);
@@ -150,7 +150,8 @@ function ChannelCreateForm() {
                 </Form.Label>
               )}
 
-              <Form.File
+              <Form.Control
+                type="file"
                 id="image-upload"
                 accept="image/*"
                 onChange={handleChangeImage}
