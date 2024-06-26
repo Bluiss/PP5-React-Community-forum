@@ -1,12 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import { useSetChannelData } from "../../contexts/ChannelDataContext";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import { MoreDropdown } from "../../components/MoreDropdown";
+import { axiosReq } from "../../api/axiosDefaults";
 
 const Channel = ({ channel, imageSize = 55, mobile }) => {
-
   const {
     following_id = null,
     image,
@@ -18,8 +19,22 @@ const Channel = ({ channel, imageSize = 55, mobile }) => {
 
   const currentUser = useCurrentUser();
   const is_owner = currentUser?.username === owner;
+  const history = useHistory();
 
   const { handleFollow, handleUnfollow } = useSetChannelData();
+
+  const handleEdit = () => {
+    history.push(`/channels/${title}/edit`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axiosReq.delete(`/channels/title/${title}/`);
+      history.push('/'); 
+    } catch (err) {
+      console.error("Failed to delete the channel:", err);
+    }
+  };
 
   return (
     <Card className="mb-3">
@@ -57,6 +72,9 @@ const Channel = ({ channel, imageSize = 55, mobile }) => {
               </Button>
             )}
           </>
+        )}
+        {is_owner && (
+          <MoreDropdown handleEdit={handleEdit} handleDelete={handleDelete} />
         )}
       </Card.Footer>
     </Card>

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams,  } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import Channel from "./Channel";
-import { MoreDropdown } from "../../components/MoreDropdown";
 
 const ChannelHeader = () => {
   const { title } = useParams();
-  const history = useHistory();
   const [channel, setChannel] = useState(null);
   const [error, setError] = useState(null);
 
@@ -25,18 +23,7 @@ const ChannelHeader = () => {
     fetchChannel();
   }, [title]);
 
-  const handleEdit = () => {
-    history.push(`/channels/${title}/edit`);
-  };
-
-  const handleDelete = async () => {
-    try {
-      await axiosReq.delete(`/channels/title/${title}/`);
-      history.push('/'); 
-    } catch (err) {
-      console.error("Failed to delete the channel:", err);
-    }
-  };
+ 
 
   if (error) {
     return <div>{error}</div>;
@@ -45,9 +32,6 @@ const ChannelHeader = () => {
   return (
     <div className="container-fluid p-0">
       <div className="d-flex justify-content-between align-items-center">
-      {channel && channel.is_owner && (
-          <MoreDropdown handleEdit={handleEdit} handleDelete={handleDelete} />
-        )}
         {channel && <Channel channel={channel} imageSize={100} />}
       </div>
     </div>
