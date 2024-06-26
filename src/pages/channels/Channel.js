@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 import { MoreDropdown } from "../../components/MoreDropdown";
 import { axiosReq } from "../../api/axiosDefaults";
 
-const Channel = ({ channel, imageSize = 55, mobile }) => {
+const Channel = ({ channel, imageSize = 55, mobile, className }) => {
   const {
     following_id = null,
     image,
@@ -30,16 +30,21 @@ const Channel = ({ channel, imageSize = 55, mobile }) => {
   const handleDelete = async () => {
     try {
       await axiosReq.delete(`/channels/title/${title}/`);
-      history.push('/'); 
+      history.push('/');
     } catch (err) {
       console.error("Failed to delete the channel:", err);
     }
   };
 
   return (
-    <Card className="mb-3">
+    <Card className={`mb-3 ${className}`}>
       <Link to={`/channels/${title}`}>
-        <Card.Img variant="top" src={image} alt="channel image" height="auto" />
+        <Card.Img
+          variant="top"
+          src={image}
+          alt="channel image"
+          style={{ width: "100%", height: "auto" }}
+        />
       </Link>
       <Card.Body className="text-align-center">
         <Card.Title>
