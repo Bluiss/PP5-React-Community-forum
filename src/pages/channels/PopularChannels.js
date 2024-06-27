@@ -6,13 +6,13 @@ import Channel from "./Channel";
 import Asset from "../../components/Asset";
 
 const PopularChannels = ({ mobile }) => {
-  const { popularChannel } = useChannelData(); // Assuming popularChannel is an array
+  const { popularChannel = [] } = useChannelData(); // Default to an empty array if popularChannel is undefined
+
+  console.log("Popular Channels:", popularChannel); // Add this line
 
   return (
     <Container
-      className={`${appStyles.Content} ${
-        mobile ? "d-lg-none text-center mb-3" : ""
-      }`}
+      className={`${appStyles.Content} ${mobile ? "d-lg-none text-center mb-3" : ""}`}
     >
       {popularChannel.length > 0 ? (
         <>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import { useSetChannelData } from "../../contexts/ChannelDataContext";
@@ -9,7 +9,8 @@ import { axiosReq } from "../../api/axiosDefaults";
 
 const Channel = ({ channel, imageSize = 55, mobile, className }) => {
   const {
-    following_id = null,
+    id,
+    following_id,
     image,
     owner,
     title,
@@ -22,6 +23,11 @@ const Channel = ({ channel, imageSize = 55, mobile, className }) => {
   const history = useHistory();
 
   const { handleFollow, handleUnfollow } = useSetChannelData();
+  const [isFollowing, setIsFollowing] = useState(!!following_id);
+
+  useEffect(() => {
+    setIsFollowing(!!following_id);
+  }, [following_id]);
 
   const handleEdit = () => {
     history.push(`/channels/${title}/edit`);
@@ -35,6 +41,31 @@ const Channel = ({ channel, imageSize = 55, mobile, className }) => {
       console.error("Failed to delete the channel:", err);
     }
   };
+
+  const handleFollowClick = async () => {
+    try {
+      await handleFollow(channel);
+      setIsFollowing(true);
+    } catch (err) {
+      console.error("Failed to follow the channel:", err);
+    }
+  };
+
+  const handleUnfollowClick = async () => {
+    try {
+      await handleUnfollow(channel);
+      setIsFollowing(false);
+    } catch (err) {
+      console.error("Failed to unfollow the channel:", err);
+    }
+  };
+
+  // Debugging logs
+  console.log("Channel data:", channel);
+  console.log("Current user:", currentUser);
+  console.log("Is owner:", is_owner);
+  console.log("Following ID:", following_id);
+  console.log("Is Following:", isFollowing);
 
   return (
     <Card className={`mb-3 ${className}`}>
@@ -59,10 +90,10 @@ const Channel = ({ channel, imageSize = 55, mobile, className }) => {
         <span className="text-muted">Followers: {followers_count}</span>
         {!mobile && currentUser && !is_owner && (
           <>
-            {following_id ? (
+            {isFollowing ? (
               <Button
                 variant="outline-dark"
-                onClick={() => handleUnfollow(channel)}
+                onClick={handleUnfollowClick}
                 className="ml-2"
               >
                 Unfollow
@@ -70,7 +101,7 @@ const Channel = ({ channel, imageSize = 55, mobile, className }) => {
             ) : (
               <Button
                 variant="dark"
-                onClick={() => handleFollow(channel)}
+                onClick={handleFollowClick}
                 className="ml-2"
               >
                 Follow

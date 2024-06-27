@@ -78,6 +78,8 @@ export const ChannelDataProvider = ({ children }) => {
     const handleMount = async () => {
       try {
         const { data } = await axiosReq.get("/channels/?ordering=-followers_count");
+        console.log("Fetched channels data:", data); // Debugging log
+
         setChannelData((prevState) => ({
           ...prevState,
           pageChannel: data,
