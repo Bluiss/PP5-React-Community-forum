@@ -46,13 +46,12 @@ function ChannelsPagePost({ message }) {
       console.error("Channel title is undefined, skipping fetchPosts");
     }
   }, [query, pathname, sortOrder, title]);
-  
 
   return (
     <Row className="h-100">
       <Col className="py-2 p-0 p-lg-2" lg={8}>
         <PopularProfiles mobile />
-        <ChannelHeader/>
+        <ChannelHeader />
         <div className="d-flex justify-content-between align-items-center mb-3 pr-1">
           <div>
             <Dropdown>
@@ -60,14 +59,25 @@ function ChannelsPagePost({ message }) {
                 Sort By
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => setSortOrder("-created_at")}>Newest</Dropdown.Item>
-                <Dropdown.Item onClick={() => setSortOrder("created_at")}>Oldest</Dropdown.Item>
-                <Dropdown.Item onClick={() => setSortOrder("-total_vote_count")}>Most Upvotes</Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortOrder("-created_at")}>
+                  Newest
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortOrder("created_at")}>
+                  Oldest
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => setSortOrder("-total_vote_count")}
+                >
+                  Most Upvotes
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>
           <div className="flex-grow-1 ml-2">
-            <Form className="w-100" onSubmit={(event) => event.preventDefault()}>
+            <Form
+              className="w-100"
+              onSubmit={(event) => event.preventDefault()}
+            >
               <Form.Control
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}

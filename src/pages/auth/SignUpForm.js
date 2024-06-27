@@ -14,8 +14,6 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 
-
-
 const defaultTheme = createTheme();
 
 export default function SignUp() {
@@ -151,7 +149,6 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-
       </Container>
     </ThemeProvider>
   );

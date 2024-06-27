@@ -39,7 +39,7 @@ function ChannelsPage() {
     fetchChannelData();
 
     return () => {
-      isMounted = false; 
+      isMounted = false;
     };
   }, [title, location.pathname]);
 
@@ -48,17 +48,17 @@ function ChannelsPage() {
     return <div>Error: {error.message}</div>;
   }
 
-
   return (
     <Row className="h-100">
       {title && channel ? (
-        <ChannelsPagePost channel={channel} message="No posts found for this channel." />
+        <ChannelsPagePost
+          channel={channel}
+          message="No posts found for this channel."
+        />
       ) : channels.length > 0 ? (
-        channels.map((chan) => (
-          <Channel key={chan.id} channel={chan} />
-        ))
+        channels.map((chan) => <Channel key={chan.id} channel={chan} />)
       ) : (
-        <Asset/>
+        <Asset />
       )}
     </Row>
   );

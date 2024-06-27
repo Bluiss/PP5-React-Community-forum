@@ -10,10 +10,7 @@ import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 
 import { axiosReq } from "../../api/axiosDefaults";
-import {
-  useCurrentUser,
-  useSetCurrentUser,
-} from "../../contexts/CurrentUserContext";
+import { useCurrentUser, useSetCurrentUser } from "../../contexts/CurrentUserContext";
 
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
@@ -35,15 +32,21 @@ const ProfileEditForm = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
+    let isMounted = true; // Flag to check if component is mounted
+
     const handleMount = async () => {
       if (currentUser?.profile_id?.toString() === id) {
         try {
           const { data } = await axiosReq.get(`/profiles/${id}/`);
-          const { name, content, image } = data;
-          setProfileData({ name, content, image });
+          if (isMounted) {
+            const { name, content, image } = data;
+            setProfileData({ name, content, image });
+          }
         } catch (err) {
           console.log(err);
-          history.push("/");
+          if (isMounted) {
+            history.push("/");
+          }
         }
       } else {
         history.push("/");
@@ -51,6 +54,10 @@ const ProfileEditForm = () => {
     };
 
     handleMount();
+
+    return () => {
+      isMounted = false; // Cleanup function sets isMounted to false
+    };
   }, [currentUser, history, id]);
 
   const handleChange = (event) => {
@@ -137,7 +144,8 @@ const ProfileEditForm = () => {
                   Change the image
                 </Form.Label>
               </div>
-              <Form.File
+              <Form.Control
+                type="file"
                 id="image-upload"
                 ref={imageFile}
                 accept="image/*"

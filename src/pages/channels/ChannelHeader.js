@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import Channel from "./Channel";
-import styles from "../../styles/ChannelHeader.module.css";  // Import the CSS file as a module
+import styles from "../../styles/ChannelHeader.module.css"; // Import the CSS file as a module
 
 const ChannelHeader = () => {
   const { title } = useParams();
@@ -31,7 +31,13 @@ const ChannelHeader = () => {
   return (
     <div className={styles.channelHeaderContainer}>
       <div className="d-flex justify-content-between align-items-center">
-        {channel && <Channel channel={channel} imageSize={100} className={styles.fullWidthCard} />}
+        {channel && (
+          <Channel
+            channel={channel}
+            imageSize={100}
+            className={styles.fullWidthCard}
+          />
+        )}
       </div>
     </div>
   );

@@ -3,10 +3,7 @@ import { Navbar, Container, Nav, Dropdown, OverlayTrigger, Tooltip } from "react
 import logo from "../assets/logo.png";
 import styles from "../styles/NavBar.module.css";
 import { NavLink } from "react-router-dom";
-import {
-  useCurrentUser,
-  useSetCurrentUser,
-} from "../contexts/CurrentUserContext";
+import { useCurrentUser, useSetCurrentUser } from "../contexts/CurrentUserContext";
 import Avatar from "./Avatar";
 import axios from "axios";
 import useClickOutsideToggle from "../hooks/useClickOutsideToggle";
@@ -31,6 +28,7 @@ const NavBar = () => {
       className={styles.NavLink}
       activeClassName={styles.Active}
       to="/posts/create"
+      aria-label="Add Post"
     >
       <i className="far fa-plus-square"></i> Add Post
     </NavLink>
@@ -41,6 +39,7 @@ const NavBar = () => {
       className={styles.NavLink}
       activeClassName={styles.Active}
       to="/channel/create"
+      aria-label="Add Channel"
     >
       <i className="far fa-plus-square"></i> Add Channel
     </NavLink>
@@ -56,6 +55,7 @@ const NavBar = () => {
           className={styles.NavLink}
           activeClassName={styles.Active}
           to="/feed"
+          aria-label="Profiles you follow"
         >
           <i className="fas fa-stream"></i>
         </NavLink>
@@ -68,6 +68,7 @@ const NavBar = () => {
           className={styles.NavLink}
           activeClassName={styles.Active}
           to="/liked"
+          aria-label="Your Likes"
         >
           <i className="fas fa-heart"></i>
         </NavLink>
@@ -80,16 +81,18 @@ const NavBar = () => {
           className={styles.NavLink}
           activeClassName={styles.Active}
           to="/channels/followed"
+          aria-label="Channels You Follow"
         >
           <i className="fa-solid fa-tv"></i>
         </NavLink>
       </OverlayTrigger>
-      <NavLink className={styles.NavLink} to="/" onClick={handleSignOut}>
+      <NavLink className={styles.NavLink} to="/" onClick={handleSignOut} aria-label="Sign Out">
         <i className="fas fa-sign-out-alt"></i>
       </NavLink>
       <NavLink
         className={styles.NavLink}
         to={`/profiles/${currentUser?.profile_id}`}
+        aria-label="Your Profile"
       >
         <Avatar src={currentUser?.profile_image} text="" height={40} />
       </NavLink>
@@ -102,6 +105,7 @@ const NavBar = () => {
         className={styles.NavLink}
         activeClassName={styles.Active}
         to="/signin"
+        aria-label="Sign In"
       >
         <i className="fas fa-sign-in-alt"></i>
       </NavLink>
@@ -109,6 +113,7 @@ const NavBar = () => {
         to="/signup"
         className={styles.NavLink}
         activeClassName={styles.Active}
+        aria-label="Sign Up"
       >
         <i className="fas fa-user-plus"></i>
       </NavLink>
@@ -117,12 +122,7 @@ const NavBar = () => {
 
   return (
     <>
-      <Navbar
-        expanded={expanded}
-        className={styles.NavBar}
-        expand="md"
-
->
+      <Navbar expanded={expanded} className={styles.NavBar} expand="md">
         <Container>
           <NavLink to="/">
             <Navbar.Brand>
@@ -131,10 +131,7 @@ const NavBar = () => {
           </NavLink>
           {currentUser && (
             <Dropdown>
-              <Dropdown.Toggle
-                className={styles.CustomDropdownToggle}
-                id="dropdown-basic"
-              >
+              <Dropdown.Toggle className={styles.CustomDropdownToggle} id="dropdown-basic">
                 <i className="far fa-plus-square"></i>
               </Dropdown.Toggle>
 
@@ -144,19 +141,10 @@ const NavBar = () => {
               </Dropdown.Menu>
             </Dropdown>
           )}
-          <Navbar.Toggle
-            ref={ref}
-            onClick={() => setExpanded(!expanded)}
-            aria-controls="basic-navbar-nav"
-          />
+          <Navbar.Toggle ref={ref} onClick={() => setExpanded(!expanded)} aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <NavLink
-                exact
-                className={styles.NavLink}
-                activeClassName={styles.Active}
-                to="/"
-              >
+              <NavLink exact className={styles.NavLink} activeClassName={styles.Active} to="/" aria-label="Home">
                 <i className="fas fa-home"></i>
               </NavLink>
 

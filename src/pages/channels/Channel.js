@@ -30,7 +30,7 @@ const Channel = ({ channel, imageSize = 55, mobile, className }) => {
   const handleDelete = async () => {
     try {
       await axiosReq.delete(`/channels/title/${title}/`);
-      history.push('/');
+      history.push("/");
     } catch (err) {
       console.error("Failed to delete the channel:", err);
     }

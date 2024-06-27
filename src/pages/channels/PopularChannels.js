@@ -1,5 +1,5 @@
-import React from 'react';
-import { Container } from 'react-bootstrap';
+import React from "react";
+import { Container } from "react-bootstrap";
 import appStyles from "../../App.module.css";
 import { useChannelData } from "../../contexts/ChannelDataContext";
 import Channel from "./Channel";
@@ -20,7 +20,12 @@ const PopularChannels = ({ mobile }) => {
           {mobile ? (
             <div className="d-flex justify-content-around">
               {popularChannel.slice(0, 4).map((channel) => (
-                <Channel className="d-flex justify-content-around" key={channel.id} channel={channel} mobile />
+                <Channel
+                  className="d-flex justify-content-around"
+                  key={channel.id}
+                  channel={channel}
+                  mobile
+                />
               ))}
             </div>
           ) : (
@@ -34,6 +39,6 @@ const PopularChannels = ({ mobile }) => {
       )}
     </Container>
   );
-}
+};
 
 export default PopularChannels;
