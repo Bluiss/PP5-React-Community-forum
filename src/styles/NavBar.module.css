@@ -28,6 +28,6 @@
 }
 
 .NavBar .navbar-toggler.expanded {
-  background-color: rgba(0, 0, 0, 0.5) !important; /* Ensure this style is applied */
-  border-radius: 5px; /* Optional: Add rounded corners */
+  background-color: rgba(0, 0, 0, 0.5) !important; 
+  border-radius: 5px; 
 }

@@ -123,7 +123,7 @@ const NavBar = () => {
   return (
     <>
       <Navbar expanded={expanded} className={styles.NavBar} expand="md">
-        <Container>
+        <Container >
           <NavLink to="/">
             <Navbar.Brand>
               <img src={logo} alt="logo" height="45" />
@@ -145,7 +145,7 @@ const NavBar = () => {
             ref={ref}
             onClick={() => {
               setExpanded(!expanded);
-              console.log(ref.current.classList); // Log class list to verify
+              console.log(ref.current.classList); 
             }}
             aria-controls="basic-navbar-nav"
             className={`${expanded ? 'expanded' : ''}`}
