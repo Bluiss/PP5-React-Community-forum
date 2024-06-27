@@ -43,6 +43,8 @@ function PostsPage({ message, filter = "" }) {
     <Row className="h-100">
       <Col className="py-2 p-0 p-lg-2" lg={8}>
         <PopularProfiles mobile />
+        <PopularChannels mobile />
+
 
         <div className="d-flex justify-content-between align-items-center mb-3 pr-1">
           <div>

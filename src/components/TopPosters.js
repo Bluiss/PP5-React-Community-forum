@@ -25,10 +25,10 @@ const TopPosters = () => {
             </div>
           ))
         ) : (
-          <p>No top posters available.</p>
+          <Asset spinner /> 
         )
       ) : (
-        <Asset spinner /> // Show a spinner while loading
+        <Asset spinner /> 
       )}
     </Container>
   );

@@ -19,7 +19,7 @@ const PopularChannels = ({ mobile }) => {
           <h5 className="text-center mb-3">Trending Channels</h5>
           {mobile ? (
             <div className="d-flex justify-content-around">
-              {popularChannel.slice(0, 4).map((channel) => (
+              {popularChannel.slice(0, 1).map((channel) => ( // Slice to show only the first channel
                 <Channel
                   className="d-flex justify-content-around"
                   key={channel.id}

@@ -141,7 +141,15 @@ const NavBar = () => {
               </Dropdown.Menu>
             </Dropdown>
           )}
-          <Navbar.Toggle ref={ref} onClick={() => setExpanded(!expanded)} aria-controls="basic-navbar-nav" />
+          <Navbar.Toggle
+            ref={ref}
+            onClick={() => {
+              setExpanded(!expanded);
+              console.log(ref.current.classList); // Log class list to verify
+            }}
+            aria-controls="basic-navbar-nav"
+            className={`${expanded ? 'expanded' : ''}`}
+          />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <NavLink exact className={styles.NavLink} activeClassName={styles.Active} to="/" aria-label="Home">
