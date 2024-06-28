@@ -8,7 +8,7 @@ For more technical details and to explore the backend implementation, you can vi
 
 
 
-Responsive image
+[](src/assets/readme_images/amiresponsive.png)
 
 ## Project Goals
 
