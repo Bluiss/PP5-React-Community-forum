@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -10,19 +10,23 @@ import Alert from "react-bootstrap/Alert";
 import { axiosReq } from "../../api/axiosDefaults";
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
+import { useChannelData, useSetChannelData } from "../../contexts/ChannelDataContext";
 
 const ChannelEditForm = () => {
   const { title } = useParams();
   const history = useHistory();
   const imageFile = useRef();
+  const { pageChannel } = useChannelData();
+  const { setChannelData } = useSetChannelData();
 
-  const [channelData, setChannelData] = useState({
+  const [channelData, setChannelDataLocal] = useState({
+    title: "",
     name: "",
     description: "",
     image: "",
   });
 
-  const { name, description, image } = channelData;
+  const { title: channelTitle, name, description, image } = channelData;
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -33,7 +37,8 @@ const ChannelEditForm = () => {
         );
         const channel = response.data;
         if (channel) {
-          setChannelData({
+          setChannelDataLocal({
+            title: channel.title,
             name: channel.name,
             description: channel.description,
             image: channel.image,
@@ -51,26 +56,41 @@ const ChannelEditForm = () => {
   }, [title, history]);
 
   const handleChange = (event) => {
-    setChannelData({
-      ...channelData,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+    setChannelDataLocal((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("title", title);
+    formData.append("title", channelTitle);
     formData.append("description", description);
     if (imageFile.current?.files[0]) {
       formData.append("image", imageFile.current.files[0]);
     }
 
     try {
-      await axiosReq.put(
+      const { data } = await axiosReq.put(
         `/channels/title/${encodeURIComponent(title)}/`,
         formData
       );
+
+      // Update the context state with the new data
+      setChannelData((prevState) => {
+        const updatedChannels = prevState.pageChannel.map((channel) =>
+          channel.title === title ? data : channel
+        );
+
+        return {
+          ...prevState,
+          pageChannel: updatedChannels,
+          popularChannel: updatedChannels,
+        };
+      });
+
       history.goBack();
     } catch (err) {
       console.error(err);
@@ -78,7 +98,7 @@ const ChannelEditForm = () => {
     }
   };
 
-  const ChannelTextFields = ({ name, description, handleChange, errors }) => (
+  const ChannelTextFields = ({ title, name, description, handleChange, errors }) => (
     <>
       <Form.Group>
         <Form.Label>Title</Form.Label>
@@ -88,7 +108,7 @@ const ChannelEditForm = () => {
           onChange={handleChange}
           name="title"
         />
-        {errors?.name?.map((message, idx) => (
+        {errors?.title?.map((message, idx) => (
           <Alert variant="warning" key={idx}>
             {message}
           </Alert>
@@ -146,7 +166,7 @@ const ChannelEditForm = () => {
                   accept="image/*"
                   onChange={(e) => {
                     if (e.target.files[0]) {
-                      setChannelData({
+                      setChannelDataLocal({
                         ...channelData,
                         image: URL.createObjectURL(e.target.files[0]),
                       });
@@ -157,7 +177,7 @@ const ChannelEditForm = () => {
             </Form.Group>
             <div className="d-md-none">
               <ChannelTextFields
-                {...{ name, description, handleChange, errors }}
+                {...{ title: channelTitle, name, description, handleChange, errors }}
               />
             </div>
           </Container>
@@ -165,7 +185,7 @@ const ChannelEditForm = () => {
         <Col md={5} lg={6} className="d-none d-md-block p-0 p-md-2 text-center">
           <Container className={appStyles.Content}>
             <ChannelTextFields
-              {...{ name, description, handleChange, errors }}
+              {...{ title: channelTitle, name, description, handleChange, errors }}
             />
           </Container>
         </Col>

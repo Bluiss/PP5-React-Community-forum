@@ -256,13 +256,13 @@ Engagement with content is facilitated through the liking system.
 
 Threadly encourages interaction through comments.
 
-- **Comment**: Users can comment on posts to participate in discussions. [Example Image](src/assets/readme_images/comment.png)
+- **Comment**: Users can comment on posts to participate in discussions. [Link](src/assets/readme_images/comment.png)
 
 #### Votes
 
 Users can express their opinions on content through a voting system.
 
-- **Voting**: Users can upvote or downvote posts to show support for high-quality content. [Example Image](src/assets/readme_images/votes.png)
+- **Voting**: Users can upvote or downvote posts to show support for high-quality content. [Link](src/assets/readme_images/votes.png)
 
 #### Trending Channels
 
