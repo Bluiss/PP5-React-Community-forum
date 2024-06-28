@@ -8,7 +8,8 @@ For more technical details and to explore the backend implementation, you can vi
 
 
 
-[](src/assets/readme_images/amiresponsive.png)
+![amirespinsive](src/assets/readme_images/amiresponsive.png)
+Site - https://pp5-react-community-forum-eca09c2c9ca6.herokuapp.com/
 
 ## Project Goals
 

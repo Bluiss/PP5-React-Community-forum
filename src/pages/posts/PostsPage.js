@@ -5,18 +5,19 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { axiosReq } from "../../api/axiosDefaults";
 import Post from "./Post";
 import Asset from "../../components/Asset";
-import PopularProfiles from "../profiles/PopularProfiles";
-import PopularChannels from "../channels/PopularChannels";
 import NoResults from "../../assets/no-results.png";
 import appStyles from "../../App.module.css";
 import { fetchMoreData } from "../../utils/utils";
+
+const PopularProfiles = React.lazy(() => import("../profiles/PopularProfiles"));
+const PopularChannels = React.lazy(() => import("../channels/PopularChannels"));
 
 function PostsPage({ message, filter = "" }) {
   const [posts, setPosts] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const { pathname } = useLocation();
   const [query, setQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("-created_at"); 
+  const [sortOrder, setSortOrder] = useState("-created_at");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -42,9 +43,10 @@ function PostsPage({ message, filter = "" }) {
   return (
     <Row className="h-100">
       <Col className="py-2 p-0 p-lg-2" lg={8}>
-        <PopularProfiles mobile />
-        <PopularChannels mobile />
-
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <PopularProfiles mobile />
+          <PopularChannels mobile />
+        </React.Suspense>
 
         <div className="d-flex justify-content-between align-items-center mb-3 pr-1">
           <div>
@@ -98,8 +100,10 @@ function PostsPage({ message, filter = "" }) {
         )}
       </Col>
       <Col md={4} className="d-none d-lg-block p-0 p-lg-2">
-        <PopularProfiles />
-        <PopularChannels />
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <PopularProfiles />
+          <PopularChannels />
+        </React.Suspense>
       </Col>
     </Row>
   );

@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import styles from "../../styles/Post.module.css";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import { Card, Row, Col, Tooltip, Overlay } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import Avatar from "../../components/Avatar";
 import { axiosRes } from "../../api/axiosDefaults";
 import { MoreDropdown } from "../../components/MoreDropdown";
+
+const Avatar = lazy(() => import("../../components/Avatar"));
 
 const Post = (props) => {
   const {
@@ -141,14 +142,24 @@ const Post = (props) => {
     <Card className={`${styles.Post} mb-4`}>
       <Card.Body className="p-3">
         <Link to={`/posts/${id}`}>
-          <Card.Img variant="top" src={image} alt={title} className="mb-3" />
+          <Card.Img
+            variant="top"
+            src={image}
+            alt={title}
+            className="mb-3"
+            loading="lazy"
+            width="100%"
+            height="auto"
+          />
         </Link>
         <Card.Title className="text-center">{title}</Card.Title>
         <Card.Text>{content}</Card.Text>
         <Row className="align-items-center justify-content-between mb-2">
           <Col xs="auto">
             <Link to={`/profiles/${profile_id}`}>
-              <Avatar src={profile_image} height={55} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <Avatar src={profile_image} height={55} width={55} />
+              </Suspense>
               <span className="ml-2">{owner}</span>
             </Link>
           </Col>
@@ -186,7 +197,12 @@ const Post = (props) => {
         <div className={styles.PostBar}>
           {is_owner ? (
             <>
-              <i className="far fa-heart" ref={heartRef} onMouseOver={() => setShowTooltip(true)} onMouseOut={() => setShowTooltip(false)} />
+              <i
+                className="far fa-heart"
+                ref={heartRef}
+                onMouseOver={() => setShowTooltip(true)}
+                onMouseOut={() => setShowTooltip(false)}
+              />
               <Overlay target={heartRef.current} show={showTooltip} placement="top">
                 {(props) => (
                   <Tooltip id="overlay-example" {...props}>
@@ -205,7 +221,12 @@ const Post = (props) => {
             </span>
           ) : (
             <>
-              <i className="far fa-heart" ref={heartRef} onMouseOver={() => setShowTooltip(true)} onMouseOut={() => setShowTooltip(false)} />
+              <i
+                className="far fa-heart"
+                ref={heartRef}
+                onMouseOver={() => setShowTooltip(true)}
+                onMouseOut={() => setShowTooltip(false)}
+              />
               <Overlay target={heartRef.current} show={showTooltip} placement="top">
                 {(props) => (
                   <Tooltip id="overlay-example" {...props}>
