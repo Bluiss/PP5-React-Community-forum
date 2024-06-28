@@ -99,45 +99,58 @@ const Post = (props) => {
   };
 
   const handleVote = async (voteType) => {
-    if (userVote === voteType) {
+    const validVoteType = parseInt(voteType, 10);
+    console.log("Sending vote with type:", validVoteType, "(type:", typeof validVoteType, ")");
+  
+    if (![1, -1].includes(validVoteType)) {
+      console.error("Invalid vote type:", voteType);
       return;
     }
-
+  
+    if (userVote === validVoteType) {
+      return;
+    }
+  
     try {
-      await axiosRes.post("/votes/", { post: id, vote_type: voteType });
-
-      setUserVote(voteType);
+      await axiosRes.post("/votes/", { post: id, vote_type: validVoteType });
+  
+      setUserVote(validVoteType);
       setVoteCount((prevVoteCount) => {
         const validPrevVoteCount = isNaN(prevVoteCount) ? 0 : prevVoteCount;
-        const validVoteType = isNaN(voteType) ? 0 : voteType;
         const validUserVote = isNaN(userVote) ? 0 : userVote;
-
+  
         return validPrevVoteCount + validVoteType - validUserVote;
       });
-
+  
       setPosts((prevPosts) => ({
         ...prevPosts,
         results: prevPosts.results.map((post) => {
           if (post.id === id) {
-            const currentVoteCount = post.vote_count ?? 0;
+            const currentVoteCount = isNaN(post.vote_count) ? 0 : post.vote_count;
             const newVoteCount = userVote
-              ? currentVoteCount - userVote + voteType
-              : currentVoteCount + voteType;
-
+              ? currentVoteCount - userVote + validVoteType
+              : currentVoteCount + validVoteType;
+  
             return {
               ...post,
               vote_count: isNaN(newVoteCount) ? 0 : newVoteCount,
-              user_vote: isNaN(voteType) ? 0 : voteType,
+              user_vote: validVoteType,
             };
           }
           return post;
         }),
       }));
     } catch (err) {
-      console.error("Error occurred:", err.response ? err.response.data : err.message);
+      console.error("Error occurred while voting:", err.response ? err.response.data : err.message);
+      if (err.response && err.response.data.detail) {
+        console.error("Server response detail:", err.response.data.detail);
+      }
     }
   };
-
+  
+  
+  
+  
   return (
     <Card className={`${styles.Post} mb-4`}>
       <Card.Body className="p-3">

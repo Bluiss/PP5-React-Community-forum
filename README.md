@@ -384,13 +384,6 @@ The `TitleComponent` fetches and displays the title of a page or channel based o
 
 The `TopPosters` component displays a list of users with the most posts, including their usernames and post counts.
 
-### useClickOutsideToggle
-
-This custom hook manages the state of an expandable element (e.g., a dropdown menu) and automatically collapses it when a click is detected outside the element.
-
-### useRedirect
-
-This custom hook handles user redirection based on their authentication status. It attempts to refresh the authentication token and redirects users accordingly.
 
 ## Testing
 
@@ -405,17 +398,17 @@ To ensure the quality and standards compliance of the code, various validation t
 #### W3C CSS Validator
 
 The W3C CSS Validator was used to validate the CSS files. This tool checks for any errors or warnings in the CSS code to ensure it adheres to W3C standards. 
-[Example Image](src/assets/readme_images/cssvalid.png)
+[Link](src/assets/readme_images/cssvalid.png)
 
 #### ESLint JavaScript Validator
 
 ESLint was used to analyze the JavaScript code. It helps in identifying and fixing problems in the code, ensuring it follows best practices and coding standards.
-[Example Image](src/assets/readme_images/jslintPass.png)
+[Link](src/assets/readme_images/jslintPass.png)
 
 #### Lighthouse Testing
 
 Lighthouse, an open-source tool from Google, was used to audit the performance, accessibility, best practices, and SEO of the web pages. The results help in optimizing the website to provide a better user experience.
-[Example Image](link-to-image)
+[Link](src/assets/readme_images/lighthouse.png)
 
 
 ### Unresolved bugs
