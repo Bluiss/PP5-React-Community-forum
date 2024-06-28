@@ -215,6 +215,8 @@ The data models for Threadly were meticulously planned and are available in the 
 
 A cohesive color scheme was chosen to enhance the visual appeal and usability of the platform. A simple blue was used as the primary color for headers, providing a clean and professional look. Accents of black and white were incorporated throughout the website to maintain a simple yet elegant design. This color palette ensures a consistent and visually pleasing user experience.
 
+![colors](src/assets/readme_images/ThreadlyImages.png)
+
 ### Fonts
 
 The Montserrat font was used throughout the project to maintain a modern and readable aesthetic. This font was selected for its clean lines and versatility, contributing to the overall user-friendly design of the platform.
