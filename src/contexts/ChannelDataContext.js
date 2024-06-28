@@ -27,7 +27,6 @@ export const ChannelDataProvider = ({ children }) => {
         return;
       }
 
-      console.log("Attempting to follow channel with ID:", clickedChannel.id); // Debugging log
 
       // Correctly call the backend endpoint
       await axiosRes.post(`/channels/${clickedChannel.id}/follow/`);
@@ -78,7 +77,6 @@ export const ChannelDataProvider = ({ children }) => {
     const handleMount = async () => {
       try {
         const { data } = await axiosReq.get("/channels/?ordering=-followers_count");
-        console.log("Fetched channels data:", data); // Debugging log
 
         setChannelData((prevState) => ({
           ...prevState,

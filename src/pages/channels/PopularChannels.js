@@ -8,7 +8,6 @@ import Asset from "../../components/Asset";
 const PopularChannels = ({ mobile }) => {
   const { popularChannel = [] } = useChannelData(); // Default to an empty array if popularChannel is undefined
 
-  console.log("Popular Channels:", popularChannel); // Add this line
 
   return (
     <Container

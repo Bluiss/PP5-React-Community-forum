@@ -60,12 +60,6 @@ const Channel = ({ channel, imageSize = 55, mobile, className }) => {
     }
   };
 
-  // Debugging logs
-  console.log("Channel data:", channel);
-  console.log("Current user:", currentUser);
-  console.log("Is owner:", is_owner);
-  console.log("Following ID:", following_id);
-  console.log("Is Following:", isFollowing);
 
   return (
     <Card className={`mb-3 ${className}`}>
