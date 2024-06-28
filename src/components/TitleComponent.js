@@ -3,32 +3,30 @@ import { BrowserRouter as Router, Route, Switch, useParams } from "react-router-
 import axios from "axios"; 
 
 const TitleComponent = () => {
-  const { title } = useParams(); // Extract the title from the URL
+  const { title } = useParams(); 
   const [pageTitle, setPageTitle] = useState("Loading...");
 
   useEffect(() => {
     const fetchTitle = async () => {
       if (!title) {
-        // If no title is provided, default to "Threadly"
         setPageTitle("Threadly");
         return;
       }
 
       try {
-        // Fetch channel details using the title
         const { data } = await axios.get(`/channels/title/${title}`);
         const channelTitle = data?.title || "Default Title";
         setPageTitle(channelTitle);
-        document.title = channelTitle; // Update the document title
+        document.title = channelTitle; 
       } catch (error) {
         console.error("Error fetching channel title:", error);
         setPageTitle("Error fetching title");
-        document.title = "Error fetching title"; // Update document title on error
+        document.title = "Error fetching title"; 
       }
     };
 
     fetchTitle();
-  }, [title]); // Only depend on 'title' to trigger the effect
+  }, [title]); 
 
   return <h1>{pageTitle}</h1>;
 };
