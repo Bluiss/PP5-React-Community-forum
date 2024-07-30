@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -8,64 +7,58 @@ import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 import Image from "react-bootstrap/Image";
 
-import styles from "../../styles/PostCreateEditForm.module.css";
-import appStyles from "../../App.module.css";
-import btnStyles from "../../styles/Button.module.css";
-
 import { useHistory, useParams } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
+import { axiosReq } from "../../api/axiosDefaults"; // make sure this is correctly imported
 
 function PostEditForm() {
   const [errors, setErrors] = useState({});
-
   const [postData, setPostData] = useState({
     title: "",
     content: "",
     image: "",
-    channel_title: "", 
+    channel_title: "", // Assuming this is a display-only field based on your data
+    channel: "", // This is the actual field expected by the backend for form submission
   });
-  const { title, content, image, channel_title } = postData; 
 
+  const { title, content, image, channel_title, channel } = postData;
   const imageInput = useRef(null);
   const history = useHistory();
   const { id } = useParams();
 
   useEffect(() => {
-    const handleMount = async () => {
+    const fetchPost = async () => {
       try {
         const { data } = await axiosReq.get(`/posts/${id}/`);
-        console.log("API Response:", data);
-        const { title, content, image, channel_display_title, is_owner } = data;
-
-        if (is_owner) {
-          setPostData({ 
-            title: title || "", 
-            content: content || "", 
-            image: image || "", 
-            channel_title: channel_display_title || "" 
+        if (data.is_owner) {
+          setPostData({
+            title: data.title,
+            content: data.content,
+            image: data.image,
+            channel_title: data.channel_display_title,
+            channel: data.channel, // Ensure this is being fetched if needed
           });
-          console.log("Post Data Set:", { title, content, image, channel_title: channel_display_title });
         } else {
           history.push("/");
         }
       } catch (err) {
-        console.log(err);
+        console.error("Error fetching post:", err);
       }
     };
 
-    handleMount();
+    fetchPost();
   }, [history, id]);
 
   const handleChange = (event) => {
-    setPostData({
-      ...postData,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+    setPostData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleChangeImage = (event) => {
     if (event.target.files.length) {
-      URL.revokeObjectURL(image);
+      URL.revokeObjectURL(postData.image);
       setPostData({
         ...postData,
         image: URL.createObjectURL(event.target.files[0]),
@@ -76,131 +69,63 @@ function PostEditForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-  
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("channel_title", channel_title);
-
-    if (imageInput?.current?.files[0]) {
+    formData.append("channel", channel); // Make sure this is included
+    if (imageInput.current?.files[0]) {
       formData.append("image", imageInput.current.files[0]);
     }
-  
-    // Log FormData key/value pairs for debugging
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
-  
+
     try {
       await axiosReq.put(`/posts/${id}/`, formData);
       history.push(`/posts/${id}`);
     } catch (err) {
-      console.log(err);
-      if (err.response?.status !== 401) {
-        setErrors(err.response?.data);
+      console.error("Error submitting:", err);
+      if (err.response) {
+        setErrors(err.response.data);
       }
     }
   };
 
-  const textFields = (
-    <div className="text-center">
-      <Form.Group>
-        <Form.Label>Title</Form.Label>
-        <Form.Control
-          type="text"
-          name="title"
-          value={title || ""} // Ensure a default value
-          onChange={handleChange}
-        />
-      </Form.Group>
-      {errors?.title?.map((message, idx) => (
-        <Alert variant="warning" key={idx}>
-          {message}
-        </Alert>
-      ))}
-
-      <Form.Group>
-        <Form.Label>Content</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={6}
-          name="content"
-          value={content || ""} // Ensure a default value
-          onChange={handleChange}
-        />
-      </Form.Group>
-      {errors?.content?.map((message, idx) => (
-        <Alert variant="warning" key={idx}>
-          {message}
-        </Alert>
-      ))}
-
-      <Form.Group>
-        <Form.Label>Channel</Form.Label>
-        <Form.Control
-          type="text"
-          name="channel_title"
-          value={channel_title || ""} // Ensure a default value
-          onChange={handleChange}
-          readOnly
-        />
-      </Form.Group>
-      {errors?.channel_title?.map((message, idx) => (
-        <Alert variant="warning" key={idx}>
-          {message}
-        </Alert>
-      ))}
-
-      <Button
-        className={`${btnStyles.Button} ${btnStyles.Blue}`}
-        onClick={() => history.goBack()}
-      >
-        cancel
-      </Button>
-      <Button className={`${btnStyles.Button} ${btnStyles.Blue}`} type="submit">
-        save
-      </Button>
-    </div>
-  );
-
   return (
     <Form onSubmit={handleSubmit}>
       <Row>
-        <Col className="py-2 p-0 p-md-2" md={7} lg={8}>
-          <Container
-            className={`${appStyles.Content} ${styles.Container} d-flex flex-column justify-content-center`}
-          >
+        <Col md={7} lg={8}>
+          <Container>
             <Form.Group className="text-center">
-              <figure>
-                <Image className={appStyles.Image} src={image} rounded />
-              </figure>
-              <div>
-                <Form.Label
-                  className={`${btnStyles.Button} ${btnStyles.Blue} btn`}
-                  htmlFor="image-upload"
-                >
-                  Change the image
-                </Form.Label>
-              </div>
-
+              <Image src={image} rounded />
               <Form.Control
-                id="image-upload"
                 type="file"
                 accept="image/*"
                 onChange={handleChangeImage}
                 ref={imageInput}
               />
             </Form.Group>
-            {errors?.image?.map((message, idx) => (
-              <Alert variant="warning" key={idx}>
-                {message}
-              </Alert>
-            ))}
+            <Form.Group>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                value={title}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Content</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={6}
+                name="content"
+                value={content}
+                onChange={handleChange}
+              />
+            </Form.Group>
 
-            <div className="d-md-none">{textFields}</div>
+            <Button type="submit" className="me-2">
+              Save
+            </Button>
+            <Button onClick={() => history.goBack()}>Cancel</Button>
           </Container>
-        </Col>
-        <Col md={5} lg={4} className="d-none d-md-block p-0 p-md-2">
-          <Container className={appStyles.Content}>{textFields}</Container>
         </Col>
       </Row>
     </Form>

@@ -1,22 +1,29 @@
 .NavBar {
-    background-color: #4056F5;
-    height: 108px;
-  }
-  
-  .NavLink {
-    padding: 15px;
-  }
-  
-  .Active i {
-    color: white;
-  }
+  background-color: #4056F5;
+  height: 108px;
+  z-index: 1000; /* Ensure the navbar has a high z-index */
+  position: relative; /* Set relative position if not already set */
+}
 
-  .CustomDropdownToggle {
-    background-color: transparent !important;
-    border: none !important;
-    color: inherit;
-  }
-  
+.NavLink {
+  padding: 15px;
+  z-index: 1001; /* Ensure NavLinks have a higher z-index */
+}
+
+.NavLink i, /* Ensure all icons within NavLink are black */
+.NavBar .Active i, /* Override any active styles to keep icons black */
+.NavBar .navbar-toggler i, /* Ensure the toggle icon is also black */
+.NavBar .CustomDropdownToggle i { /* Ensure the dropdown icons are also black */
+  color: black !important; /* Set the color of icons to black */
+}
+
+.CustomDropdownToggle {
+  background-color: transparent !important;
+  border: none !important;
+  color: inherit;
+  z-index: 1002; /* Ensure the dropdown toggle is above other components */
+}
+
 .NavBar .brand-title {
   font-family: "Montserrat", sans-serif !important;
   font-size: 100px !important;
@@ -25,9 +32,12 @@
 .NavBar .navbar-toggler {
   background-color: transparent;
   border: none;
+  z-index: 1001; /* Ensure the toggle button is above other components */
+  position: relative; /* Set relative position if not already set */
 }
 
 .NavBar .navbar-toggler.expanded {
   background-color: rgba(0, 0, 0, 0.5) !important; 
   border-radius: 5px; 
+  z-index: 1003; /* Ensure the expanded menu appears on top */
 }
