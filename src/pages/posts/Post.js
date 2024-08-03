@@ -40,9 +40,17 @@ const Post = (props) => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
+        console.log("Fetching post data for post ID:", id);
         const { data } = await axiosRes.get(`/posts/${id}/`);
+        console.log("Fetched post data:", data);
         setVoteCount(data.vote_count || 0);
         setUserVote(data.user_vote || 0);
+        console.log(
+          "Post state updated: voteCount =",
+          data.vote_count,
+          "userVote =",
+          data.user_vote
+        );
       } catch (err) {
         console.log("Error fetching post data:", err);
       }
@@ -60,6 +68,7 @@ const Post = (props) => {
   const handleLike = async () => {
     try {
       const { data } = await axiosRes.post("/likes/", { post: id });
+      console.log("Liked post:", id);
       setPosts((prevPosts) => ({
         ...prevPosts,
         results: prevPosts.results.map((post) => {
@@ -76,6 +85,7 @@ const Post = (props) => {
   const handleUnlike = async () => {
     try {
       await axiosRes.delete(`/likes/${like_id}/`);
+      console.log("Unliked post:", id);
       setPosts((prevPosts) => ({
         ...prevPosts,
         results: prevPosts.results.map((post) => {
@@ -92,6 +102,7 @@ const Post = (props) => {
   const handleDelete = async () => {
     try {
       await axiosRes.delete(`/posts/${id}/`);
+      console.log("Deleted post:", id);
       history.goBack();
     } catch (err) {
       console.log(err);
@@ -99,58 +110,48 @@ const Post = (props) => {
   };
 
   const handleVote = async (voteType) => {
-    const validVoteType = parseInt(voteType, 10);
-    console.log("Sending vote with type:", validVoteType, "(type:", typeof validVoteType, ")");
-  
-    if (![1, -1].includes(validVoteType)) {
-      console.error("Invalid vote type:", voteType);
+    const voteValue = parseInt(voteType, 10);
+
+    if (![1, -1].includes(voteValue)) {
+      console.error(`Invalid vote type: ${voteType}`);
       return;
     }
-  
-    if (userVote === validVoteType) {
+
+    if (userVote === voteValue) {
       return;
     }
-  
+
     try {
-      await axiosRes.post("/votes/", { post: id, vote_type: validVoteType });
-  
-      setUserVote(validVoteType);
-      setVoteCount((prevVoteCount) => {
-        const validPrevVoteCount = isNaN(prevVoteCount) ? 0 : prevVoteCount;
-        const validUserVote = isNaN(userVote) ? 0 : userVote;
-  
-        return validPrevVoteCount + validVoteType - validUserVote;
-      });
-  
+      // Calculate the new vote count
+      const newVoteCount = voteCount + voteValue;
+
+      // Send the vote to the server
+      await axiosRes.post("/votes/", { post: id, vote_type: voteValue });
+
+      // Update the component state
+      setUserVote(voteValue);
+      setVoteCount(newVoteCount);
+
+      // Update the posts list with the new vote count
       setPosts((prevPosts) => ({
         ...prevPosts,
-        results: prevPosts.results.map((post) => {
-          if (post.id === id) {
-            const currentVoteCount = isNaN(post.vote_count) ? 0 : post.vote_count;
-            const newVoteCount = userVote
-              ? currentVoteCount - userVote + validVoteType
-              : currentVoteCount + validVoteType;
-  
-            return {
-              ...post,
-              vote_count: isNaN(newVoteCount) ? 0 : newVoteCount,
-              user_vote: validVoteType,
-            };
-          }
-          return post;
-        }),
+        results: prevPosts.results.map((post) =>
+          post.id === id
+            ? { ...post, vote_count: newVoteCount, user_vote: voteValue }
+            : post
+        ),
       }));
     } catch (err) {
-      console.error("Error occurred while voting:", err.response ? err.response.data : err.message);
-      if (err.response && err.response.data.detail) {
+      console.error(
+        "Error occurred while voting:",
+        err.response ? err.response.data : err.message
+      );
+      if (err.response?.data?.detail) {
         console.error("Server response detail:", err.response.data.detail);
       }
     }
   };
-  
-  
-  
-  
+
   return (
     <Card className={`${styles.Post} mb-4`}>
       <Card.Body className="p-3">
@@ -179,11 +180,16 @@ const Post = (props) => {
           <Col xs="auto" className="text-right">
             {channel_display_title && (
               <Link to={`/channels/${channel_display_title}`}>
-                <Card.Text className="font-weight-bold">{channel_display_title}</Card.Text>
+                <Card.Text className="font-weight-bold">
+                  {channel_display_title}
+                </Card.Text>
               </Link>
             )}
             {is_owner && postPage && (
-              <MoreDropdown handleEdit={handleEdit} handleDelete={handleDelete} />
+              <MoreDropdown
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
             )}
           </Col>
         </Row>
@@ -195,14 +201,16 @@ const Post = (props) => {
         <div className="d-flex align-items-center">
           <span
             onClick={() => handleVote(1)}
-            className={`cursor-pointer ${userVote === 1 ? styles.Voted : ''}`}
+            className={`cursor-pointer ${userVote === 1 ? styles.Voted : ""}`}
           >
             <i className="fas fa-arrow-up" />
           </span>
           <span className="ml-2">{voteCount}</span>
           <span
             onClick={() => handleVote(-1)}
-            className={`ml-2 cursor-pointer ${userVote === -1 ? styles.Voted : ''}`}
+            className={`ml-2 cursor-pointer ${
+              userVote === -1 ? styles.Voted : ""
+            }`}
           >
             <i className="fas fa-arrow-down" />
           </span>
@@ -216,7 +224,11 @@ const Post = (props) => {
                 onMouseOver={() => setShowTooltip(true)}
                 onMouseOut={() => setShowTooltip(false)}
               />
-              <Overlay target={heartRef.current} show={showTooltip} placement="top">
+              <Overlay
+                target={heartRef.current}
+                show={showTooltip}
+                placement="top"
+              >
                 {(props) => (
                   <Tooltip id="overlay-example" {...props}>
                     You can't like your own post!
@@ -240,7 +252,11 @@ const Post = (props) => {
                 onMouseOver={() => setShowTooltip(true)}
                 onMouseOut={() => setShowTooltip(false)}
               />
-              <Overlay target={heartRef.current} show={showTooltip} placement="top">
+              <Overlay
+                target={heartRef.current}
+                show={showTooltip}
+                placement="top"
+              >
                 {(props) => (
                   <Tooltip id="overlay-example" {...props}>
                     Log in to like posts!
