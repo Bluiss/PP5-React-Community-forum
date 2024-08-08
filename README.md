@@ -415,6 +415,8 @@ Lighthouse, an open-source tool from Google, was used to audit the performance, 
 
 ### Unresolved bugs
 
+There is a random bug when a channel title is being edited, that it returns a 404 error. I havent been able to replicate this as its been random, on either resubmission or refreshing the page seems to fix the issue.
+
 ### Vote 
 For a vote to be filtered it needs an inital vote
 
