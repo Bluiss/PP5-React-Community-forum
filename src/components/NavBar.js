@@ -122,8 +122,8 @@ const NavBar = () => {
 
   return (
     <>
-      <Navbar expanded={expanded} className={styles.NavBar} expand="md">
-        <Container >
+      <Navbar expanded={expanded} className={`${styles.NavBar} ${expanded ? styles.NavbarExpanded : ''}`} expand="md">
+        <Container>
           <NavLink to="/">
             <Navbar.Brand>
               <img src={logo} alt="logo" height="45" />
@@ -143,10 +143,7 @@ const NavBar = () => {
           )}
           <Navbar.Toggle
             ref={ref}
-            onClick={() => {
-              setExpanded(!expanded);
-              console.log(ref.current.classList); 
-            }}
+            onClick={() => setExpanded(!expanded)}
             aria-controls="basic-navbar-nav"
             className={`${expanded ? 'expanded' : ''}`}
           />
@@ -155,7 +152,6 @@ const NavBar = () => {
               <NavLink exact className={styles.NavLink} activeClassName={styles.Active} to="/" aria-label="Home">
                 <i className="fas fa-home"></i>
               </NavLink>
-
               {currentUser ? loggedInIcons : loggedOutIcons}
             </Nav>
           </Navbar.Collapse>

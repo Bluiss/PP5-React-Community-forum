@@ -1,5 +1,5 @@
 .NavBar {
-  background-color: #4056F5;
+  background-color: rgb(64, 86, 245);
   height: 108px;
   z-index: 1000; /* Ensure the navbar has a high z-index */
   position: relative; /* Set relative position if not already set */
@@ -10,11 +10,11 @@
   z-index: 1001; /* Ensure NavLinks have a higher z-index */
 }
 
-.NavLink i, /* Ensure all icons within NavLink are black */
-.NavBar .Active i, /* Override any active styles to keep icons black */
-.NavBar .navbar-toggler i, /* Ensure the toggle icon is also black */
-.NavBar .CustomDropdownToggle i { /* Ensure the dropdown icons are also black */
-  color: black !important; /* Set the color of icons to black */
+.NavLink i,
+.NavBar .Active i,
+.NavBar .navbar-toggler i,
+.NavBar .CustomDropdownToggle i {
+  color: white; /* Set the color of icons to white */
 }
 
 .CustomDropdownToggle {
@@ -37,7 +37,12 @@
 }
 
 .NavBar .navbar-toggler.expanded {
-  background-color: rgba(0, 0, 0, 0.5) !important; 
-  border-radius: 5px; 
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  border-radius: 5px;
   z-index: 1003; /* Ensure the expanded menu appears on top */
 }
+
+.NavbarExpanded .NavLink{
+  background-color:rgba(64, 85, 245, 0.60) ;
+}
+

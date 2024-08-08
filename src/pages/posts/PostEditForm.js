@@ -89,11 +89,11 @@ function PostEditForm() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Row>
+      <Row className="d-flex align-items-center justify-content-center">
         <Col md={7} lg={8}>
           <Container>
             <Form.Group className="text-center">
-              <Image src={image} rounded />
+              <Image src={image} rounded className="img-fluid" />
               <Form.Control
                 type="file"
                 accept="image/*"
